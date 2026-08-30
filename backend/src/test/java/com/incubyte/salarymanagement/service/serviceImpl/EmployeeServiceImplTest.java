@@ -117,6 +117,38 @@ class EmployeeServiceImplTest {
     }
 
     @Test
+    void activateEmployeeSetsStatusToActive() {
+        Employee employee = Employee.builder().id(5L).status(EmployeeStatus.INACTIVE).build();
+        when(employeeLookup.findByIdOrThrow(5L)).thenReturn(employee);
+        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        employeeService.activateEmployee(5L);
+
+        assertThat(employee.getStatus()).isEqualTo(EmployeeStatus.ACTIVE);
+        verify(employeeRepository).save(employee);
+    }
+
+    @Test
+    void deleteEmployeeRemovesTheEmployeeRecord() {
+        Employee employee = Employee.builder().id(5L).status(EmployeeStatus.ACTIVE).build();
+        when(employeeLookup.findByIdOrThrow(5L)).thenReturn(employee);
+
+        employeeService.deleteEmployee(5L);
+
+        verify(employeeRepository).delete(employee);
+    }
+
+    @Test
+    void deleteEmployeeThrowsWhenNotFound() {
+        when(employeeLookup.findByIdOrThrow(42L)).thenThrow(new EmployeeNotFoundException(42L));
+
+        assertThatThrownBy(() -> employeeService.deleteEmployee(42L))
+                .isInstanceOf(EmployeeNotFoundException.class);
+
+        verify(employeeRepository, never()).delete(any());
+    }
+
+    @Test
     void updateEmployeeRejectsAnEmailAlreadyUsedByAnotherEmployee() {
         Employee employee = Employee.builder().id(5L).email("old@acme-corp.example").status(EmployeeStatus.ACTIVE).build();
         when(employeeLookup.findByIdOrThrow(5L)).thenReturn(employee);

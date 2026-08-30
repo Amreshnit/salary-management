@@ -20,6 +20,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Employee } from '../../../core/models/employee.model';
 import { SalaryRecord } from '../../../core/models/salary-record.model';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
+import { DeleteConfirmDialogComponent } from '../../../shared/confirm-dialog/delete-confirm-dialog.component';
 
 @Component({
   selector: 'app-employee-detail',
@@ -124,6 +125,48 @@ export class EmployeeDetailComponent implements OnInit {
         this.employeeService.deactivateEmployee(employee.id).subscribe(() => {
           this.loadEmployee();
           this.notifications.success('Employee deactivated successfully.');
+        });
+      }
+    });
+  }
+
+  activateEmployee(): void {
+    const employee = this.employee();
+    if (!employee) {
+      return;
+    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Activate employee',
+        message: `Activate ${employee.firstName} ${employee.lastName}? They will show up as active again.`,
+      },
+    });
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.employeeService.activateEmployee(employee.id).subscribe(() => {
+          this.loadEmployee();
+          this.notifications.success('Employee activated successfully.');
+        });
+      }
+    });
+  }
+
+  deleteEmployee(): void {
+    const employee = this.employee();
+    if (!employee) {
+      return;
+    }
+    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+      data: {
+        title: 'Delete employee',
+        message: `You are about to permanently delete ${employee.firstName} ${employee.lastName} and their entire salary history.`,
+      },
+    });
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.employeeService.deleteEmployee(employee.id).subscribe(() => {
+          this.notifications.success('Employee deleted permanently.');
+          this.router.navigate(['/employees']);
         });
       }
     });

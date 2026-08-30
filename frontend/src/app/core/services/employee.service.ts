@@ -15,6 +15,10 @@ export abstract class EmployeeService {
 
   abstract deactivateEmployee(id: number): Observable<void>;
 
+  abstract activateEmployee(id: number): Observable<void>;
+
+  abstract deleteEmployee(id: number): Observable<void>;
+
   abstract getSalaryHistory(id: number): Observable<SalaryRecord[]>;
 
   abstract addSalaryRecord(id: number, request: SalaryRecordRequest): Observable<SalaryRecord>;

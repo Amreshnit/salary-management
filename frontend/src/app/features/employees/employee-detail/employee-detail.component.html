@@ -48,7 +48,16 @@
           <mat-icon>person_off</mat-icon>
           Deactivate
         </button>
+      } @else {
+        <button mat-button color="primary" (click)="activateEmployee()">
+          <mat-icon>person</mat-icon>
+          Activate
+        </button>
       }
+      <button mat-button color="warn" (click)="deleteEmployee()">
+        <mat-icon>delete_forever</mat-icon>
+        Delete Permanently
+      </button>
     </mat-card-actions>
   </mat-card>
 

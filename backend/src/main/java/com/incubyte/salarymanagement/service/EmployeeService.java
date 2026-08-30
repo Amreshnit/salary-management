@@ -22,6 +22,10 @@ public interface EmployeeService {
 
     void deactivateEmployee(Long employeeId);
 
+    void activateEmployee(Long employeeId);
+
+    void deleteEmployee(Long employeeId);
+
     List<String> getDistinctDepartments();
 
     List<String> getDistinctCountries();

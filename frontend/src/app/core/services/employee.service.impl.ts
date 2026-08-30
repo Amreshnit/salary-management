@@ -45,6 +45,14 @@ export class EmployeeServiceImpl extends EmployeeService {
   }
 
   override deactivateEmployee(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/deactivate`, {});
+  }
+
+  override activateEmployee(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/activate`, {});
+  }
+
+  override deleteEmployee(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 

@@ -106,7 +106,7 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/{employeeId}")
+    @PatchMapping("/{employeeId}/deactivate")
     public ResponseEntity<Void> deactivateEmployee(@PathVariable Long employeeId) {
         log.info("Deactivating employee {}", employeeId);
         try {
@@ -114,6 +114,30 @@ public class EmployeeController {
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
             log.error("Failed to deactivate employee {}", employeeId, ex);
+            throw ex;
+        }
+    }
+
+    @PatchMapping("/{employeeId}/activate")
+    public ResponseEntity<Void> activateEmployee(@PathVariable Long employeeId) {
+        log.info("Activating employee {}", employeeId);
+        try {
+            employeeService.activateEmployee(employeeId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            log.error("Failed to activate employee {}", employeeId, ex);
+            throw ex;
+        }
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long employeeId) {
+        log.info("Deleting employee {}", employeeId);
+        try {
+            employeeService.deleteEmployee(employeeId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            log.error("Failed to delete employee {}", employeeId, ex);
             throw ex;
         }
     }

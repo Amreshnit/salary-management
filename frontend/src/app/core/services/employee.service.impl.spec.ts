@@ -73,8 +73,24 @@ describe('EmployeeServiceImpl', () => {
     request.flush({} as Employee);
   });
 
-  it('sends a delete request to deactivate an employee', () => {
+  it('sends a patch request to deactivate an employee', () => {
     service.deactivateEmployee(42).subscribe();
+
+    const request = httpMock.expectOne(`${employeesUrl}/42/deactivate`);
+    expect(request.request.method).toBe('PATCH');
+    request.flush(null);
+  });
+
+  it('sends a patch request to activate an employee', () => {
+    service.activateEmployee(42).subscribe();
+
+    const request = httpMock.expectOne(`${employeesUrl}/42/activate`);
+    expect(request.request.method).toBe('PATCH');
+    request.flush(null);
+  });
+
+  it('sends a delete request to permanently delete an employee', () => {
+    service.deleteEmployee(42).subscribe();
 
     const request = httpMock.expectOne(`${employeesUrl}/42`);
     expect(request.request.method).toBe('DELETE');

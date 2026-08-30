@@ -121,6 +121,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
+    public void activateEmployee(Long employeeId) {
+        Employee employee = employeeLookup.findByIdOrThrow(employeeId);
+        employee.setStatus(EmployeeStatus.ACTIVE);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEmployee(Long employeeId) {
+        Employee employee = employeeLookup.findByIdOrThrow(employeeId);
+        employeeRepository.delete(employee);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<String> getDistinctDepartments() {
         return employeeRepository.findDistinctDepartments();
