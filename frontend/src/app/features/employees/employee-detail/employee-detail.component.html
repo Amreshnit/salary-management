@@ -1,0 +1,113 @@
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (employee(); as employee) {
+  <button mat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Back to employees
+  </button>
+
+  <mat-card class="profile-card">
+    <mat-card-header>
+      <mat-card-title>{{ employee.firstName }} {{ employee.lastName }}</mat-card-title>
+      <mat-card-subtitle>{{ employee.jobTitle }} &middot; {{ employee.department }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="profile-grid">
+        <div><span class="label">Employee Code</span>{{ employee.employeeCode }}</div>
+        <div><span class="label">Email</span>{{ employee.email }}</div>
+        <div><span class="label">Country</span>{{ employee.country }}</div>
+        <div><span class="label">Seniority</span>{{ employee.seniorityLevel }}</div>
+        <div><span class="label">Hire Date</span>{{ employee.hireDate }}</div>
+        <div>
+          <span class="label">Status</span>
+          <mat-chip [color]="employee.status === 'ACTIVE' ? 'primary' : undefined" highlighted>
+            {{ employee.status }}
+          </mat-chip>
+        </div>
+        <div>
+          <span class="label">Current Salary</span>
+          {{ employee.currentSalaryAmount | number: '1.0-2' }} {{ employee.currentSalaryCurrency }}
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button [routerLink]="['/employees', employee.id, 'edit']">
+        <mat-icon>edit</mat-icon>
+        Edit Profile
+      </a>
+      <button mat-button (click)="toggleSalaryForm()">
+        <mat-icon>payments</mat-icon>
+        Record Salary Change
+      </button>
+      @if (employee.status === 'ACTIVE') {
+        <button mat-button color="warn" (click)="deactivateEmployee()">
+          <mat-icon>person_off</mat-icon>
+          Deactivate
+        </button>
+      }
+    </mat-card-actions>
+  </mat-card>
+
+  @if (showSalaryForm()) {
+    <mat-card class="salary-form-card">
+      <mat-card-title>New Salary Record</mat-card-title>
+      <form [formGroup]="salaryForm" (ngSubmit)="submitSalaryChange()" class="salary-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Amount ({{ employee.currency }})</mat-label>
+          <input matInput type="number" formControlName="amount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Effective From</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="effectiveFrom" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker" />
+          <mat-datepicker #picker />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Reason</mat-label>
+          <mat-select formControlName="reason">
+            <mat-option value="RAISE">Raise</mat-option>
+            <mat-option value="PROMOTION">Promotion</mat-option>
+            <mat-option value="ADJUSTMENT">Adjustment</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="salary-form-actions">
+          <button mat-button type="button" (click)="toggleSalaryForm()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="salaryForm.invalid">Save</button>
+        </div>
+      </form>
+    </mat-card>
+  }
+
+  <mat-card class="history-card">
+    <mat-card-title>Salary History</mat-card-title>
+    <table mat-table [dataSource]="salaryHistory()">
+      <ng-container matColumnDef="effectiveFrom">
+        <th mat-header-cell *matHeaderCellDef>Effective From</th>
+        <td mat-cell *matCellDef="let record">{{ record.effectiveFrom }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="effectiveTo">
+        <th mat-header-cell *matHeaderCellDef>Effective To</th>
+        <td mat-cell *matCellDef="let record">{{ record.effectiveTo || 'Current' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let record">{{ record.amount | number: '1.0-2' }} {{ record.currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef>Reason</th>
+        <td mat-cell *matCellDef="let record">{{ record.reason }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="salaryHistoryColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: salaryHistoryColumns"></tr>
+    </table>
+  </mat-card>
+}

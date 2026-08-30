@@ -1,0 +1,111 @@
+<h1>Employees</h1>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onFiltersChanged()"
+      placeholder="Name, email, or employee code"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Department</mat-label>
+    <mat-select [(ngModel)]="selectedDepartment" (selectionChange)="onFiltersChanged()">
+      <mat-option [value]="null">All departments</mat-option>
+      @for (department of departments; track department) {
+        <mat-option [value]="department">{{ department }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Country</mat-label>
+    <mat-select [(ngModel)]="selectedCountry" (selectionChange)="onFiltersChanged()">
+      <mat-option [value]="null">All countries</mat-option>
+      @for (country of countries; track country.country) {
+        <mat-option [value]="country.country">{{ country.country }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFiltersChanged()">
+      <mat-option [value]="null">All statuses</mat-option>
+      <mat-option value="ACTIVE">Active</mat-option>
+      <mat-option value="INACTIVE">Inactive</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-stroked-button (click)="onFiltersChanged()">
+    <mat-icon>search</mat-icon>
+    Search
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="40" />
+  </div>
+} @else {
+  <table mat-table [dataSource]="employees()" class="employee-table">
+    <ng-container matColumnDef="employeeCode">
+      <th mat-header-cell *matHeaderCellDef>Code</th>
+      <td mat-cell *matCellDef="let employee">{{ employee.employeeCode }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let employee">{{ employee.firstName }} {{ employee.lastName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="department">
+      <th mat-header-cell *matHeaderCellDef>Department</th>
+      <td mat-cell *matCellDef="let employee">{{ employee.department }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef>Country</th>
+      <td mat-cell *matCellDef="let employee">{{ employee.country }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="jobTitle">
+      <th mat-header-cell *matHeaderCellDef>Job Title</th>
+      <td mat-cell *matCellDef="let employee">{{ employee.jobTitle }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="salary">
+      <th mat-header-cell *matHeaderCellDef>Salary</th>
+      <td mat-cell *matCellDef="let employee">
+        {{ employee.currentSalaryAmount | number: '1.0-0' }} {{ employee.currentSalaryCurrency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let employee">
+        <mat-chip [color]="employee.status === 'ACTIVE' ? 'primary' : undefined" highlighted>
+          {{ employee.status }}
+        </mat-chip>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="openEmployee(row)" class="employee-row"></tr>
+  </table>
+
+  @if (employees().length === 0) {
+    <p class="empty-state">No employees match these filters.</p>
+  }
+
+  <mat-paginator
+    [length]="totalElements()"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[10, 20, 50, 100]"
+    (page)="onPageChanged($event)"
+  />
+}

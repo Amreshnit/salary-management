@@ -1,0 +1,78 @@
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="40" />
+  </div>
+} @else {
+  <mat-card class="form-card">
+    <mat-card-title>{{ isEditMode() ? 'Edit Employee' : 'Add Employee' }}</mat-card-title>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="employee-form">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <mat-select formControlName="department">
+          @for (department of departments; track department) {
+            <mat-option [value]="department">{{ department }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Job Title</mat-label>
+        <input matInput formControlName="jobTitle" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Seniority Level</mat-label>
+        <mat-select formControlName="seniorityLevel">
+          @for (level of seniorityLevels; track level) {
+            <mat-option [value]="level">{{ level }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="country">
+          @for (country of countries; track country.country) {
+            <mat-option [value]="country.country">{{ country.country }} ({{ country.currency }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (!isEditMode()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Hire Date</mat-label>
+          <input matInput [matDatepicker]="hireDatePicker" formControlName="hireDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="hireDatePicker" />
+          <mat-datepicker #hireDatePicker />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Starting Salary ({{ currencyForSelectedCountry() || 'select country first' }})</mat-label>
+          <input matInput type="number" formControlName="startingSalary" />
+        </mat-form-field>
+      }
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+          {{ isEditMode() ? 'Save Changes' : 'Create Employee' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+}
