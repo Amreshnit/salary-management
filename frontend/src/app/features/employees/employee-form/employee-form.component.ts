@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { map, startWith } from 'rxjs';
 
 import { EmployeeService } from '../../../core/services/employee.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { SENIORITY_LEVELS } from '../../../core/models/reference-data';
 import { CountryOption, StateOption, getAllCountries, getStatesOfCountry } from '../../../core/models/location-data';
 
@@ -41,6 +42,7 @@ export class EmployeeFormComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly notifications = inject(NotificationService);
 
   readonly departments = signal<string[]>([]);
   readonly seniorityLevels = SENIORITY_LEVELS;
@@ -156,7 +158,10 @@ export class EmployeeFormComponent implements OnInit {
           currency,
         })
         .subscribe({
-          next: () => this.router.navigate(['/employees', id]),
+          next: () => {
+            this.notifications.success('Employee updated successfully.');
+            this.router.navigate(['/employees', id]);
+          },
           error: () => this.saving.set(false),
         });
       return;
@@ -178,7 +183,10 @@ export class EmployeeFormComponent implements OnInit {
         startingSalary: value.startingSalary,
       })
       .subscribe({
-        next: (created) => this.router.navigate(['/employees', created.id]),
+        next: (created) => {
+          this.notifications.success('Employee created successfully.');
+          this.router.navigate(['/employees', created.id]);
+        },
         error: () => this.saving.set(false),
       });
   }

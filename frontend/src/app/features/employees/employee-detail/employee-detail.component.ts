@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EmployeeService } from '../../../core/services/employee.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Employee } from '../../../core/models/employee.model';
 import { SalaryRecord } from '../../../core/models/salary-record.model';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
@@ -47,6 +48,7 @@ export class EmployeeDetailComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
+  private readonly notifications = inject(NotificationService);
 
   readonly employee = signal<Employee | null>(null);
   readonly salaryHistory = signal<SalaryRecord[]>([]);
@@ -102,6 +104,7 @@ export class EmployeeDetailComponent implements OnInit {
         this.showSalaryForm.set(false);
         this.salaryForm.reset({ amount: 0, effectiveFrom: new Date(), reason: 'RAISE' });
         this.loadEmployee();
+        this.notifications.success('Salary change recorded successfully.');
       });
   }
 
@@ -118,7 +121,10 @@ export class EmployeeDetailComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        this.employeeService.deactivateEmployee(employee.id).subscribe(() => this.loadEmployee());
+        this.employeeService.deactivateEmployee(employee.id).subscribe(() => {
+          this.loadEmployee();
+          this.notifications.success('Employee deactivated successfully.');
+        });
       }
     });
   }

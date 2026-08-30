@@ -30,3 +30,23 @@ body {
   background-color: #f8fafc;
   color: rgba(0, 0, 0, 0.87);
 }
+
+.app-toast {
+  &.app-toast-success .mdc-snackbar__surface {
+    background-color: #1e7e34 !important;
+  }
+
+  &.app-toast-error .mdc-snackbar__surface {
+    background-color: #c62828 !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: #fff !important;
+  }
+
+  .mat-mdc-button.mat-mdc-snack-bar-action,
+  .mat-mdc-snack-bar-action .mdc-button__label {
+    color: #fff !important;
+  }
+}
