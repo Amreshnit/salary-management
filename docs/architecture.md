@@ -76,10 +76,34 @@ decisions).
   tests (`@WebMvcTest` + MockMvc) for controllers/validation/error shape;
   repository tests against the real local Postgres instance (no Docker
   dependency assumed) using a dedicated `test` profile/schema.
-- **Frontend**: Jasmine/Karma specs for the employee API service (via
-  `HttpClientTestingModule`) and the employee list / analytics dashboard
-  components — enough to cover the core interactions (search/filter, rendering
-  fetched data) fast and deterministically, not exhaustive UI coverage.
+- **Frontend**: specs run on Angular's default test runner (Vitest via
+  `@angular/build:unit-test` in Angular 21, not Karma/Jasmine) for the employee
+  API service (via `provideHttpClientTesting`) and the employee list / employee
+  form / analytics dashboard components — enough to cover the core
+  interactions (search/filter, rendering fetched data, error handling on
+  create/update) fast and deterministically, not exhaustive UI coverage.
+
+## Performance considerations
+
+- **Seeding**: 10,000 employees + ~12,000 salary records seed in under 2
+  seconds by bypassing JPA entirely for the bulk insert — pre-allocating IDs in
+  one round trip (`SELECT nextval(...) FROM generate_series(...)`) and using
+  `JdbcTemplate.batchUpdate` with `reWriteBatchedInserts=true` on the JDBC URL,
+  rather than persisting 10k+ managed entities one at a time.
+- **List/search at scale**: the employee list never loads more than one page
+  (`Pageable`) from Postgres, and the combined department/country/status/
+  free-text search query is covered by the indexes in the migrations
+  (`employee(department)`, `employee(country)`, `employee(status)`) so it
+  doesn't fall back to a sequential scan of all 10k+ rows per keystroke.
+- **Analytics**: the department/country/band aggregates and the
+  headcount/payroll summary are each a single grouped SQL query (one using a
+  `NTILE` window function for quintile bands, one using `FILTER` clauses for
+  the headcount summary) rather than pulling rows into the application and
+  aggregating in Java — the database does the reduction once per request.
+- **Frontend bundle**: the employee create/edit route is lazy-loaded
+  separately from the rest of the app specifically because it's the only
+  route that needs `country-state-city`'s bundled country/state dataset,
+  keeping that weight off the initial page load (list/detail/analytics).
 
 ## Environment note
 
