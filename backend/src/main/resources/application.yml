@@ -2,7 +2,7 @@ spring:
   application:
     name: salary-management
   datasource:
-    url: jdbc:postgresql://localhost:5432/salary_management
+    url: jdbc:postgresql://localhost:5432/salary_management?reWriteBatchedInserts=true
     username: postgres
     password: 1795
   jpa:

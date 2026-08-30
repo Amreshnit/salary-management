@@ -81,6 +81,17 @@ decisions).
   components — enough to cover the core interactions (search/filter, rendering
   fetched data) fast and deterministically, not exhaustive UI coverage.
 
+## Environment note
+
+Local development hit a JDK 23 / Windows-specific issue: the default Tomcat
+NIO connector's `Selector.open()` failed (`Unable to establish loopback
+connection`) because the JVM's Unix-domain-socket-based pipe used for
+selector wakeup doesn't work in this environment. `TomcatServerConfig` switches
+the connector to `Http11Nio2Protocol` (Windows IOCP-backed, no `Selector`
+involved), which sidesteps it without touching any OS/network configuration.
+Harmless on Linux/macOS deployments — NIO2 is a normal, supported Tomcat
+connector everywhere.
+
 ## Trade-offs & things a follow-up iteration would address
 
 - No authentication — acceptable for a single-persona take-home; would be the

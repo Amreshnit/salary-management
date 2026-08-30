@@ -20,10 +20,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
           AND (:country IS NULL OR e.country = :country)
           AND (:status IS NULL OR e.status = :status)
           AND (:search IS NULL OR
-               LOWER(e.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR
-               LOWER(e.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR
-               LOWER(e.email) LIKE LOWER(CONCAT('%', :search, '%')) OR
-               LOWER(e.employeeCode) LIKE LOWER(CONCAT('%', :search, '%')))
+               LOWER(e.firstName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR
+               LOWER(e.lastName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR
+               LOWER(e.email) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR
+               LOWER(e.employeeCode) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))
         """)
     Page<Employee> search(
             @Param("department") String department,
