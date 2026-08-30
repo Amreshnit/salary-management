@@ -46,6 +46,16 @@ class EmployeeRepositoryTest {
     }
 
     @Test
+    void findDistinctDepartmentsAndCountriesReturnsSortedUniqueValues() {
+        saveEmployee("EMP-T030", "Ada", "Lovelace", "ada.t2@acme-corp.example", "Engineering", "United States", EmployeeStatus.ACTIVE);
+        saveEmployee("EMP-T031", "Grace", "Hopper", "grace.t2@acme-corp.example", "Engineering", "India", EmployeeStatus.ACTIVE);
+        saveEmployee("EMP-T032", "Alan", "Turing", "alan.t2@acme-corp.example", "Sales", "France", EmployeeStatus.ACTIVE);
+
+        assertThat(employeeRepository.findDistinctDepartments()).containsExactly("Engineering", "Sales");
+        assertThat(employeeRepository.findDistinctCountries()).containsExactly("France", "India", "United States");
+    }
+
+    @Test
     void existsByEmailReflectsSavedEmployees() {
         saveEmployee("EMP-T020", "Margaret", "Hamilton", "margaret.t@acme-corp.example", "Engineering", "United States", EmployeeStatus.ACTIVE);
 

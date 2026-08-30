@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -116,6 +118,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeLookup.findByIdOrThrow(employeeId);
         employee.setStatus(EmployeeStatus.INACTIVE);
         employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getDistinctDepartments() {
+        return employeeRepository.findDistinctDepartments();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getDistinctCountries() {
+        return employeeRepository.findDistinctCountries();
     }
 
     private SalaryRecord currentSalaryOf(Employee employee) {

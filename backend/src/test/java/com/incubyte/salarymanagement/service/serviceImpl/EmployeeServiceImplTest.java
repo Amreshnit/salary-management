@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,5 +127,14 @@ class EmployeeServiceImplTest {
 
         assertThatThrownBy(() -> employeeService.updateEmployee(5L, request))
                 .isInstanceOf(DuplicateEmployeeException.class);
+    }
+
+    @Test
+    void getDistinctDepartmentsAndCountriesDelegateToRepository() {
+        when(employeeRepository.findDistinctDepartments()).thenReturn(List.of("Engineering", "Sales"));
+        when(employeeRepository.findDistinctCountries()).thenReturn(List.of("India", "United States"));
+
+        assertThat(employeeService.getDistinctDepartments()).containsExactly("Engineering", "Sales");
+        assertThat(employeeService.getDistinctCountries()).containsExactly("India", "United States");
     }
 }

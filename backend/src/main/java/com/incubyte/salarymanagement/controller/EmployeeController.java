@@ -48,6 +48,28 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/departments")
+    public List<String> getDistinctDepartments() {
+        log.info("Fetching distinct departments");
+        try {
+            return employeeService.getDistinctDepartments();
+        } catch (Exception ex) {
+            log.error("Failed to fetch distinct departments", ex);
+            throw ex;
+        }
+    }
+
+    @GetMapping("/countries")
+    public List<String> getDistinctCountries() {
+        log.info("Fetching distinct countries");
+        try {
+            return employeeService.getDistinctCountries();
+        } catch (Exception ex) {
+            log.error("Failed to fetch distinct countries", ex);
+            throw ex;
+        }
+    }
+
     @GetMapping("/{employeeId}")
     public EmployeeResponse getEmployeeById(@PathVariable Long employeeId) {
         log.info("Fetching employee {}", employeeId);

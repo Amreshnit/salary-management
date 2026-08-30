@@ -15,7 +15,7 @@
     <mat-label>Department</mat-label>
     <mat-select [(ngModel)]="selectedDepartment" (selectionChange)="onFiltersChanged()">
       <mat-option [value]="null">All departments</mat-option>
-      @for (department of departments; track department) {
+      @for (department of departments(); track department) {
         <mat-option [value]="department">{{ department }}</mat-option>
       }
     </mat-select>
@@ -25,8 +25,8 @@
     <mat-label>Country</mat-label>
     <mat-select [(ngModel)]="selectedCountry" (selectionChange)="onFiltersChanged()">
       <mat-option [value]="null">All countries</mat-option>
-      @for (country of countries; track country.country) {
-        <mat-option [value]="country.country">{{ country.country }}</mat-option>
+      @for (country of countries(); track country) {
+        <mat-option [value]="country">{{ country }}</mat-option>
       }
     </mat-select>
   </mat-form-field>

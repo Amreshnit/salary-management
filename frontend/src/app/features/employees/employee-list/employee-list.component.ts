@@ -14,7 +14,6 @@ import { MatChipsModule } from '@angular/material/chips';
 
 import { EmployeeService } from '../../../core/services/employee.service';
 import { Employee, EmployeeStatus } from '../../../core/models/employee.model';
-import { COUNTRIES, DEPARTMENTS } from '../../../core/models/reference-data';
 
 @Component({
   selector: 'app-employee-list',
@@ -39,8 +38,8 @@ export class EmployeeListComponent implements OnInit {
   private readonly router = inject(Router);
 
   readonly displayedColumns = ['employeeCode', 'name', 'email', 'department', 'country', 'jobTitle', 'salary', 'status'];
-  readonly departments = DEPARTMENTS;
-  readonly countries = COUNTRIES;
+  readonly departments = signal<string[]>([]);
+  readonly countries = signal<string[]>([]);
 
   readonly employees = signal<Employee[]>([]);
   readonly totalElements = signal(0);
@@ -54,6 +53,8 @@ export class EmployeeListComponent implements OnInit {
   pageSize = 20;
 
   ngOnInit(): void {
+    this.employeeService.getDistinctDepartments().subscribe((departments) => this.departments.set(departments));
+    this.employeeService.getDistinctCountries().subscribe((countries) => this.countries.set(countries));
     this.loadEmployees();
   }
 

@@ -1,18 +1,21 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { map, startWith } from 'rxjs';
 
 import { EmployeeService } from '../../../core/services/employee.service';
-import { DEPARTMENTS, SENIORITY_LEVELS } from '../../../core/models/reference-data';
+import { SENIORITY_LEVELS } from '../../../core/models/reference-data';
 import { CountryOption, StateOption, getAllCountries, getStatesOfCountry } from '../../../core/models/location-data';
 
 @Component({
@@ -23,6 +26,7 @@ import { CountryOption, StateOption, getAllCountries, getStatesOfCountry } from 
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
@@ -38,7 +42,7 @@ export class EmployeeFormComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly formBuilder = inject(FormBuilder);
 
-  readonly departments = DEPARTMENTS;
+  readonly departments = signal<string[]>([]);
   readonly seniorityLevels = SENIORITY_LEVELS;
   readonly countries: CountryOption[] = getAllCountries();
 
@@ -47,6 +51,15 @@ export class EmployeeFormComponent implements OnInit {
   readonly employeeId = signal<number | null>(null);
   readonly isEditMode = computed(() => this.employeeId() !== null);
   readonly statesForSelectedCountry = signal<StateOption[]>([]);
+
+  readonly countrySearchControl = new FormControl<string | CountryOption>('', { nonNullable: true });
+  readonly filteredCountries = toSignal(
+    this.countrySearchControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this.filterCountries(typeof value === 'string' ? value : value.name)),
+    ),
+    { initialValue: this.countries },
+  );
 
   readonly form = this.formBuilder.nonNullable.group({
     firstName: ['', Validators.required],
@@ -63,6 +76,8 @@ export class EmployeeFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.employeeService.getDistinctDepartments().subscribe((departments) => this.departments.set(departments));
+
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
@@ -86,9 +101,18 @@ export class EmployeeFormComponent implements OnInit {
           stateIsoCode: state?.isoCode ?? '',
           address: employee.address ?? '',
         });
+        this.countrySearchControl.setValue(country ?? '');
         this.loading.set(false);
       });
     }
+  }
+
+  displayCountryName = (country: string | CountryOption): string => (typeof country === 'string' ? country : country.name);
+
+  onCountrySelected(event: MatAutocompleteSelectedEvent): void {
+    const country: CountryOption = event.option.value;
+    this.form.controls.countryIsoCode.setValue(country.isoCode);
+    this.onCountryChanged();
   }
 
   onCountryChanged(): void {
@@ -158,6 +182,14 @@ export class EmployeeFormComponent implements OnInit {
   cancel(): void {
     const id = this.employeeId();
     this.router.navigate(id !== null ? ['/employees', id] : ['/employees']);
+  }
+
+  private filterCountries(searchText: string): CountryOption[] {
+    const lower = searchText.trim().toLowerCase();
+    if (!lower) {
+      return this.countries;
+    }
+    return this.countries.filter((country) => country.name.toLowerCase().includes(lower));
   }
 
   private toIsoDate(date: Date): string {

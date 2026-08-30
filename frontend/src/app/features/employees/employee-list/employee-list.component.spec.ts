@@ -45,7 +45,17 @@ describe('EmployeeListComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [EmployeeListComponent],
-      providers: [provideRouter([]), { provide: EmployeeService, useValue: { searchEmployees: searchEmployeesSpy } }],
+      providers: [
+        provideRouter([]),
+        {
+          provide: EmployeeService,
+          useValue: {
+            searchEmployees: searchEmployeesSpy,
+            getDistinctDepartments: () => of(['Engineering', 'Sales']),
+            getDistinctCountries: () => of(['India', 'United States']),
+          },
+        },
+      ],
     });
   });
 
@@ -57,6 +67,15 @@ describe('EmployeeListComponent', () => {
     expect(component.employees()).toHaveLength(1);
     expect(component.employees()[0].employeeCode).toBe('EMP-00001');
     expect(component.totalElements()).toBe(1);
+  });
+
+  it('populates department and country filter options from the backend', () => {
+    const fixture = TestBed.createComponent(EmployeeListComponent);
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance;
+    expect(component.departments()).toEqual(['Engineering', 'Sales']);
+    expect(component.countries()).toEqual(['India', 'United States']);
   });
 
   it('resets to the first page and re-queries when filters change', () => {

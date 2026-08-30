@@ -39,7 +39,7 @@
             <mat-label>Department</mat-label>
             <mat-icon matPrefix>apartment</mat-icon>
             <mat-select formControlName="department">
-              @for (department of departments; track department) {
+              @for (department of departments(); track department) {
                 <mat-option [value]="department">{{ department }}</mat-option>
               }
             </mat-select>
@@ -64,11 +64,21 @@
           <mat-form-field appearance="outline">
             <mat-label>Country</mat-label>
             <mat-icon matPrefix>public</mat-icon>
-            <mat-select formControlName="countryIsoCode" (selectionChange)="onCountryChanged()">
-              @for (country of countries; track country.isoCode) {
-                <mat-option [value]="country.isoCode">{{ country.name }} ({{ country.currency }})</mat-option>
+            <input
+              matInput
+              [formControl]="countrySearchControl"
+              [matAutocomplete]="countryAuto"
+              placeholder="Type to search countries"
+            />
+            <mat-autocomplete
+              #countryAuto="matAutocomplete"
+              [displayWith]="displayCountryName"
+              (optionSelected)="onCountrySelected($event)"
+            >
+              @for (country of filteredCountries(); track country.isoCode) {
+                <mat-option [value]="country">{{ country.name }} ({{ country.currency }})</mat-option>
               }
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
 
           <mat-form-field appearance="outline">

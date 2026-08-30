@@ -35,7 +35,13 @@ describe('EmployeeFormComponent', () => {
       imports: [EmployeeFormComponent],
       providers: [
         provideRouter([]),
-        { provide: EmployeeService, useValue: employeeServiceStub },
+        {
+          provide: EmployeeService,
+          useValue: {
+            getDistinctDepartments: () => of(['Engineering', 'Sales']),
+            ...employeeServiceStub,
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: convertToParamMap(routeId ? { id: routeId } : {}) } },

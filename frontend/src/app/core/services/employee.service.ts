@@ -18,4 +18,8 @@ export abstract class EmployeeService {
   abstract getSalaryHistory(id: number): Observable<SalaryRecord[]>;
 
   abstract addSalaryRecord(id: number, request: SalaryRecordRequest): Observable<SalaryRecord>;
+
+  abstract getDistinctDepartments(): Observable<string[]>;
+
+  abstract getDistinctCountries(): Observable<string[]>;
 }

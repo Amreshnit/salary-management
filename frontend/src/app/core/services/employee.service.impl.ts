@@ -55,4 +55,12 @@ export class EmployeeServiceImpl extends EmployeeService {
   override addSalaryRecord(id: number, request: SalaryRecordRequest): Observable<SalaryRecord> {
     return this.http.post<SalaryRecord>(`${this.baseUrl}/${id}/salary-records`, request);
   }
+
+  override getDistinctDepartments(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/departments`);
+  }
+
+  override getDistinctCountries(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/countries`);
+  }
 }
