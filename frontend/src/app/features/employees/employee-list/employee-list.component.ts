@@ -38,7 +38,7 @@ export class EmployeeListComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly router = inject(Router);
 
-  readonly displayedColumns = ['employeeCode', 'name', 'department', 'country', 'jobTitle', 'salary', 'status'];
+  readonly displayedColumns = ['employeeCode', 'name', 'email', 'department', 'country', 'jobTitle', 'salary', 'status'];
   readonly departments = DEPARTMENTS;
   readonly countries = COUNTRIES;
 
