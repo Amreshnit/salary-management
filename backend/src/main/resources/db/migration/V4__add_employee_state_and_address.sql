@@ -1,0 +1,3 @@
+ALTER TABLE employee
+    ADD COLUMN state VARCHAR(150),
+    ADD COLUMN address VARCHAR(255);

@@ -2,6 +2,8 @@ package com.incubyte.salarymanagement.web;
 
 import com.incubyte.salarymanagement.dto.CountrySalaryStat;
 import com.incubyte.salarymanagement.dto.DepartmentSalaryStat;
+import com.incubyte.salarymanagement.dto.HeadcountSummary;
+import com.incubyte.salarymanagement.dto.PayrollByCurrency;
 import com.incubyte.salarymanagement.dto.SalaryBandStat;
 import com.incubyte.salarymanagement.service.AnalyticsService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,5 +35,15 @@ public class AnalyticsController {
     @GetMapping("/salary-bands")
     public List<SalaryBandStat> salaryBandDistribution() {
         return analyticsService.salaryBandDistribution();
+    }
+
+    @GetMapping("/headcount-summary")
+    public HeadcountSummary headcountSummary() {
+        return analyticsService.headcountSummary();
+    }
+
+    @GetMapping("/payroll-by-currency")
+    public List<PayrollByCurrency> payrollByCurrency() {
+        return analyticsService.payrollByCurrency();
     }
 }

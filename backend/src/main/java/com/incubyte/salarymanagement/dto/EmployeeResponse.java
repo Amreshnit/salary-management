@@ -15,6 +15,8 @@ public record EmployeeResponse(
         String jobTitle,
         String seniorityLevel,
         String country,
+        String state,
+        String address,
         String currency,
         LocalDate hireDate,
         EmployeeStatus status,

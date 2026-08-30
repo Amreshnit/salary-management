@@ -24,6 +24,10 @@
   }
 }
 
+.profile-grid-address {
+  grid-column: 1 / -1;
+}
+
 .salary-form {
   display: flex;
   flex-wrap: wrap;

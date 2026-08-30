@@ -57,6 +57,8 @@ describe('EmployeeServiceImpl', () => {
       jobTitle: 'Senior Software Engineer',
       seniorityLevel: 'Senior',
       country: 'United States',
+      state: null,
+      address: null,
       currency: 'USD',
       hireDate: '2024-01-01',
       startingSalary: 120000,

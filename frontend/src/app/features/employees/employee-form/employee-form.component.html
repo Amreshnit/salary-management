@@ -61,14 +61,33 @@
             <input matInput formControlName="jobTitle" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="span-2">
+          <mat-form-field appearance="outline">
             <mat-label>Country</mat-label>
             <mat-icon matPrefix>public</mat-icon>
-            <mat-select formControlName="country">
-              @for (country of countries; track country.country) {
-                <mat-option [value]="country.country">{{ country.country }} ({{ country.currency }})</mat-option>
+            <mat-select formControlName="countryIsoCode" (selectionChange)="onCountryChanged()">
+              @for (country of countries; track country.isoCode) {
+                <mat-option [value]="country.isoCode">{{ country.name }} ({{ country.currency }})</mat-option>
               }
             </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>State / Province</mat-label>
+            <mat-icon matPrefix>map</mat-icon>
+            <mat-select formControlName="stateIsoCode" [disabled]="statesForSelectedCountry().length === 0">
+              @for (state of statesForSelectedCountry(); track state.isoCode) {
+                <mat-option [value]="state.isoCode">{{ state.name }}</mat-option>
+              }
+            </mat-select>
+            @if (statesForSelectedCountry().length === 0) {
+              <mat-hint>No states listed for this country</mat-hint>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Address</mat-label>
+            <mat-icon matPrefix>home</mat-icon>
+            <input matInput formControlName="address" placeholder="Street, city, postal code" />
           </mat-form-field>
 
           @if (!isEditMode()) {

@@ -89,8 +89,11 @@ public class DataSeeder implements CommandLineRunner {
         BigDecimal targetSalary = computeSalaryAmount(seniority, department, countryProfile, random);
         addSalaryHistory(employeeId, hireDate, targetSalary, countryProfile.currency(), isVeteranEmployee, random, salaryRows);
 
+        String state = faker.address().state();
+        String address = faker.address().streetAddress() + ", " + faker.address().city() + " " + faker.address().zipCode();
+
         return new EmployeeSeedRow(employeeId, employeeCode, firstName, lastName, email, department, jobTitle,
-                seniority.label(), countryProfile.country(), countryProfile.currency(), hireDate);
+                seniority.label(), countryProfile.country(), state, address, countryProfile.currency(), hireDate);
     }
 
     private void addSalaryHistory(long employeeId, LocalDate hireDate, BigDecimal targetSalary, String currency,
@@ -155,12 +158,13 @@ public class DataSeeder implements CommandLineRunner {
     private void insertEmployees(List<EmployeeSeedRow> rows) {
         String sql = """
             INSERT INTO employee (id, employee_code, first_name, last_name, email, department, job_title,
-                                   seniority_level, country, currency, hire_date, status, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE', now(), now())
+                                   seniority_level, country, state, address, currency, hire_date, status, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE', now(), now())
             """;
         List<Object[]> batchArgs = rows.stream()
                 .map(row -> new Object[]{row.id, row.employeeCode, row.firstName, row.lastName, row.email,
-                        row.department, row.jobTitle, row.seniorityLevel, row.country, row.currency, row.hireDate})
+                        row.department, row.jobTitle, row.seniorityLevel, row.country, row.state, row.address,
+                        row.currency, row.hireDate})
                 .toList();
         jdbcTemplate.batchUpdate(sql, batchArgs);
     }
@@ -187,12 +191,14 @@ public class DataSeeder implements CommandLineRunner {
         final String jobTitle;
         final String seniorityLevel;
         final String country;
+        final String state;
+        final String address;
         final String currency;
         final LocalDate hireDate;
 
         EmployeeSeedRow(long id, String employeeCode, String firstName, String lastName, String email,
-                        String department, String jobTitle, String seniorityLevel, String country, String currency,
-                        LocalDate hireDate) {
+                        String department, String jobTitle, String seniorityLevel, String country, String state,
+                        String address, String currency, LocalDate hireDate) {
             this.id = id;
             this.employeeCode = employeeCode;
             this.firstName = firstName;
@@ -202,6 +208,8 @@ public class DataSeeder implements CommandLineRunner {
             this.jobTitle = jobTitle;
             this.seniorityLevel = seniorityLevel;
             this.country = country;
+            this.state = state;
+            this.address = address;
             this.currency = currency;
             this.hireDate = hireDate;
         }

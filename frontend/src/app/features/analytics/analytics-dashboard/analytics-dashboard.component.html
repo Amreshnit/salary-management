@@ -11,6 +11,20 @@
     <mat-spinner diameter="48" />
   </div>
 } @else {
+  <div class="kpi-grid">
+    @for (kpi of kpiCards(); track kpi.label) {
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" [style.background]="kpi.accent">
+          <mat-icon>{{ kpi.icon }}</mat-icon>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ kpi.value }}</span>
+          <span class="kpi-label">{{ kpi.label }}</span>
+        </div>
+      </mat-card>
+    }
+  </div>
+
   <div class="currency-picker-scroll">
     <mat-button-toggle-group class="currency-picker" [value]="selectedCurrency()">
       @for (currency of availableCurrencies(); track currency) {
@@ -18,6 +32,16 @@
       }
     </mat-button-toggle-group>
   </div>
+
+  @if (currentPayroll(); as payroll) {
+    <div class="payroll-banner">
+      <mat-icon>account_balance_wallet</mat-icon>
+      <span>
+        Total annual payroll in {{ payroll.currency }}: <strong>{{ payroll.totalAnnualCost | number: '1.0-0' }}</strong>
+        across {{ payroll.employeeCount }} employees
+      </span>
+    </div>
+  }
 
   <mat-tab-group class="analytics-tabs" animationDuration="200ms">
     <mat-tab label="By Department">

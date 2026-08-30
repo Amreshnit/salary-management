@@ -2,11 +2,16 @@ package com.incubyte.salarymanagement.service;
 
 import com.incubyte.salarymanagement.dto.CountrySalaryStat;
 import com.incubyte.salarymanagement.dto.DepartmentSalaryStat;
+import com.incubyte.salarymanagement.dto.HeadcountSummary;
+import com.incubyte.salarymanagement.dto.PayrollByCurrency;
 import com.incubyte.salarymanagement.dto.SalaryBandStat;
 import com.incubyte.salarymanagement.repository.AnalyticsRepository;
+import com.incubyte.salarymanagement.repository.projection.HeadcountSummaryProjection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -39,6 +44,31 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     public List<SalaryBandStat> salaryBandDistribution() {
         return analyticsRepository.salaryBands().stream()
                 .map(row -> new SalaryBandStat(row.getCurrency(), row.getBand(), row.getMinAmount(), row.getMaxAmount(), row.getEmployeeCount()))
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HeadcountSummary headcountSummary() {
+        HeadcountSummaryProjection row = analyticsRepository.headcountSummary();
+        BigDecimal averageTenureYears = row.getAvgTenureYears() != null
+                ? row.getAvgTenureYears().setScale(1, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+        return new HeadcountSummary(
+                row.getActiveCount(),
+                row.getInactiveCount(),
+                row.getDepartmentCount(),
+                row.getCountryCount(),
+                averageTenureYears,
+                row.getNewHiresLast90Days()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PayrollByCurrency> payrollByCurrency() {
+        return analyticsRepository.payrollByCurrency().stream()
+                .map(row -> new PayrollByCurrency(row.getCurrency(), row.getTotalAnnualCost(), row.getEmployeeCount()))
                 .toList();
     }
 }

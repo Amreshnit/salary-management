@@ -67,6 +67,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .jobTitle(request.jobTitle())
                 .seniorityLevel(request.seniorityLevel())
                 .country(request.country())
+                .state(request.state())
+                .address(request.address())
                 .currency(request.currency())
                 .hireDate(request.hireDate())
                 .status(EmployeeStatus.ACTIVE)
@@ -95,6 +97,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setJobTitle(request.jobTitle());
         employee.setSeniorityLevel(request.seniorityLevel());
         employee.setCountry(request.country());
+        employee.setState(request.state());
+        employee.setAddress(request.address());
         employee.setCurrency(request.currency());
 
         Employee savedEmployee = employeeRepository.save(employee);

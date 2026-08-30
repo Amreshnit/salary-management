@@ -20,6 +20,8 @@ public class EmployeeMapper {
                 employee.getJobTitle(),
                 employee.getSeniorityLevel(),
                 employee.getCountry(),
+                employee.getState(),
+                employee.getAddress(),
                 employee.getCurrency(),
                 employee.getHireDate(),
                 employee.getStatus(),

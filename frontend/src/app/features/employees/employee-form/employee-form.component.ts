@@ -12,7 +12,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 
 import { EmployeeService } from '../../../core/services/employee.service';
-import { COUNTRIES, DEPARTMENTS, SENIORITY_LEVELS } from '../../../core/models/reference-data';
+import { DEPARTMENTS, SENIORITY_LEVELS } from '../../../core/models/reference-data';
+import { CountryOption, StateOption, getAllCountries, getStatesOfCountry } from '../../../core/models/location-data';
 
 @Component({
   selector: 'app-employee-form',
@@ -39,12 +40,13 @@ export class EmployeeFormComponent implements OnInit {
 
   readonly departments = DEPARTMENTS;
   readonly seniorityLevels = SENIORITY_LEVELS;
-  readonly countries = COUNTRIES;
+  readonly countries: CountryOption[] = getAllCountries();
 
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly employeeId = signal<number | null>(null);
   readonly isEditMode = computed(() => this.employeeId() !== null);
+  readonly statesForSelectedCountry = signal<StateOption[]>([]);
 
   readonly form = this.formBuilder.nonNullable.group({
     firstName: ['', Validators.required],
@@ -53,7 +55,9 @@ export class EmployeeFormComponent implements OnInit {
     department: ['', Validators.required],
     jobTitle: ['', Validators.required],
     seniorityLevel: ['', Validators.required],
-    country: ['', Validators.required],
+    countryIsoCode: ['', Validators.required],
+    stateIsoCode: [''],
+    address: [''],
     hireDate: [new Date(), Validators.required],
     startingSalary: [0, [Validators.required, Validators.min(1)]],
   });
@@ -65,6 +69,12 @@ export class EmployeeFormComponent implements OnInit {
       this.employeeId.set(id);
       this.loading.set(true);
       this.employeeService.getEmployeeById(id).subscribe((employee) => {
+        const country = this.countries.find((candidate) => candidate.name === employee.country);
+        if (country) {
+          this.statesForSelectedCountry.set(getStatesOfCountry(country.isoCode));
+        }
+        const state = this.statesForSelectedCountry().find((candidate) => candidate.name === employee.state);
+
         this.form.patchValue({
           firstName: employee.firstName,
           lastName: employee.lastName,
@@ -72,16 +82,24 @@ export class EmployeeFormComponent implements OnInit {
           department: employee.department,
           jobTitle: employee.jobTitle,
           seniorityLevel: employee.seniorityLevel,
-          country: employee.country,
+          countryIsoCode: country?.isoCode ?? '',
+          stateIsoCode: state?.isoCode ?? '',
+          address: employee.address ?? '',
         });
         this.loading.set(false);
       });
     }
   }
 
+  onCountryChanged(): void {
+    const isoCode = this.form.controls.countryIsoCode.value;
+    this.statesForSelectedCountry.set(isoCode ? getStatesOfCountry(isoCode) : []);
+    this.form.controls.stateIsoCode.setValue('');
+  }
+
   currencyForSelectedCountry(): string {
-    const countryName = this.form.controls.country.value;
-    return this.countries.find((country) => country.country === countryName)?.currency ?? '';
+    const isoCode = this.form.controls.countryIsoCode.value;
+    return this.countries.find((country) => country.isoCode === isoCode)?.currency ?? '';
   }
 
   submit(): void {
@@ -90,7 +108,9 @@ export class EmployeeFormComponent implements OnInit {
     }
     this.saving.set(true);
     const value = this.form.getRawValue();
-    const currency = this.currencyForSelectedCountry();
+    const country = this.countries.find((candidate) => candidate.isoCode === value.countryIsoCode);
+    const state = this.statesForSelectedCountry().find((candidate) => candidate.isoCode === value.stateIsoCode);
+    const currency = country?.currency ?? '';
     const id = this.employeeId();
 
     if (id !== null) {
@@ -102,10 +122,15 @@ export class EmployeeFormComponent implements OnInit {
           department: value.department,
           jobTitle: value.jobTitle,
           seniorityLevel: value.seniorityLevel,
-          country: value.country,
+          country: country?.name ?? '',
+          state: state?.name ?? null,
+          address: value.address || null,
           currency,
         })
-        .subscribe(() => this.router.navigate(['/employees', id]));
+        .subscribe({
+          next: () => this.router.navigate(['/employees', id]),
+          error: () => this.saving.set(false),
+        });
       return;
     }
 
@@ -117,12 +142,17 @@ export class EmployeeFormComponent implements OnInit {
         department: value.department,
         jobTitle: value.jobTitle,
         seniorityLevel: value.seniorityLevel,
-        country: value.country,
+        country: country?.name ?? '',
+        state: state?.name ?? null,
+        address: value.address || null,
         currency,
         hireDate: this.toIsoDate(value.hireDate),
         startingSalary: value.startingSalary,
       })
-      .subscribe((created) => this.router.navigate(['/employees', created.id]));
+      .subscribe({
+        next: (created) => this.router.navigate(['/employees', created.id]),
+        error: () => this.saving.set(false),
+      });
   }
 
   cancel(): void {

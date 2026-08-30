@@ -1,6 +1,12 @@
 import { Observable } from 'rxjs';
 
-import { CountrySalaryStat, DepartmentSalaryStat, SalaryBandStat } from '../models/analytics.model';
+import {
+  CountrySalaryStat,
+  DepartmentSalaryStat,
+  HeadcountSummary,
+  PayrollByCurrency,
+  SalaryBandStat,
+} from '../models/analytics.model';
 
 export abstract class AnalyticsService {
   abstract averageSalaryByDepartment(): Observable<DepartmentSalaryStat[]>;
@@ -8,4 +14,8 @@ export abstract class AnalyticsService {
   abstract averageSalaryByCountry(): Observable<CountrySalaryStat[]>;
 
   abstract salaryBandDistribution(): Observable<SalaryBandStat[]>;
+
+  abstract headcountSummary(): Observable<HeadcountSummary>;
+
+  abstract payrollByCurrency(): Observable<PayrollByCurrency[]>;
 }

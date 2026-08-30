@@ -1,19 +1,50 @@
-<mat-toolbar color="primary" class="app-toolbar">
-  <span class="app-title">
-    <mat-icon class="app-title-icon">payments</mat-icon>
-    <span class="app-title-text">Salary Management</span>
-  </span>
-  <nav class="app-nav-links">
-    <a mat-button routerLink="/employees" routerLinkActive="active">Employees</a>
-    <a mat-button routerLink="/analytics" routerLinkActive="active">Analytics</a>
-  </nav>
-  <span class="app-spacer"></span>
-  <a mat-raised-button color="accent" routerLink="/employees/new" class="app-add-button">
-    <mat-icon>person_add</mat-icon>
-    <span class="app-add-button-label">Add Employee</span>
-  </a>
-</mat-toolbar>
+<mat-sidenav-container class="app-shell">
+  <mat-sidenav
+    #sidenav
+    class="app-sidenav"
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+    (closedStart)="sidenavOpened.set(false)"
+  >
+    <div class="app-brand">
+      <mat-icon class="app-brand-icon">payments</mat-icon>
+      <span class="app-brand-name">Salary Management</span>
+    </div>
 
-<main class="app-content">
-  <router-outlet />
-</main>
+    <mat-nav-list class="app-nav-list">
+      @for (item of navItems; track item.path) {
+        <a
+          mat-list-item
+          [routerLink]="item.path"
+          routerLinkActive="app-nav-item-active"
+          (click)="closeSidenavOnMobile()"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="app-sidenav-footer">
+      <a mat-flat-button routerLink="/employees/new" (click)="closeSidenavOnMobile()" class="app-cta">
+        <mat-icon>person_add</mat-icon>
+        Add Employee
+      </a>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="app-header">
+      <button mat-icon-button (click)="toggleSidenav()" class="app-menu-toggle" aria-label="Toggle navigation">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <h1 class="app-page-title">{{ pageTitle() }}</h1>
+      <span class="app-spacer"></span>
+      <div class="app-user-avatar" title="HR Manager">HR</div>
+    </mat-toolbar>
+
+    <main class="app-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

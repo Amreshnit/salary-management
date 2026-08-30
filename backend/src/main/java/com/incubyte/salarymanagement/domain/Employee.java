@@ -51,6 +51,12 @@ public class Employee {
     @Column(nullable = false, length = 100)
     private String country;
 
+    @Column(length = 150)
+    private String state;
+
+    @Column(length = 255)
+    private String address;
+
     @Column(nullable = false, length = 3)
     private String currency;
 

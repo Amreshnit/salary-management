@@ -10,6 +10,8 @@ export interface Employee {
   jobTitle: string;
   seniorityLevel: string;
   country: string;
+  state: string | null;
+  address: string | null;
   currency: string;
   hireDate: string;
   status: EmployeeStatus;
@@ -25,6 +27,8 @@ export interface EmployeeCreateRequest {
   jobTitle: string;
   seniorityLevel: string;
   country: string;
+  state: string | null;
+  address: string | null;
   currency: string;
   hireDate: string;
   startingSalary: number;
@@ -38,6 +42,8 @@ export interface EmployeeUpdateRequest {
   jobTitle: string;
   seniorityLevel: string;
   country: string;
+  state: string | null;
+  address: string | null;
   currency: string;
 }
 

@@ -1,27 +1,108 @@
-.app-toolbar {
-  gap: 4px;
+:host {
+  display: block;
+  height: 100vh;
 }
 
-.app-title {
+.app-shell {
+  height: 100%;
+}
+
+.app-sidenav {
+  width: 260px;
+  background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+  color: rgba(255, 255, 255, 0.92);
+  display: flex;
+  flex-direction: column;
+  border-right: none !important;
+}
+
+.app-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 24px 20px;
+  font-size: 17px;
   font-weight: 600;
-  white-space: nowrap;
+  letter-spacing: 0.2px;
 }
 
-.app-title-icon {
-  display: none;
+.app-brand-icon {
+  color: #fbbf24;
 }
 
-.app-nav-links {
+.app-nav-list {
+  padding: 8px 12px;
+  flex: 1 1 auto;
+
+  ::ng-deep .mdc-list-item {
+    border-radius: 10px;
+    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.78) !important;
+
+    .mdc-list-item__start {
+      color: rgba(255, 255, 255, 0.78) !important;
+    }
+  }
+
+  ::ng-deep .mdc-list-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+::ng-deep .app-nav-item-active {
+  background: rgba(255, 255, 255, 0.14) !important;
+
+  .mdc-list-item__primary-text,
+  .mdc-list-item__start {
+    color: white !important;
+    font-weight: 600;
+  }
+}
+
+.app-sidenav-footer {
+  padding: 16px;
+}
+
+.app-cta {
+  width: 100%;
   display: flex;
-  gap: 4px;
-  margin-left: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #7c46f1 !important;
+  color: white !important;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.app-page-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 0 4px;
 }
 
 .app-spacer {
   flex: 1 1 auto;
+}
+
+.app-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .app-content {
@@ -29,42 +110,12 @@
   max-width: 1200px;
   margin: 0 auto;
   overflow-x: hidden;
-}
-
-@media (max-width: 720px) {
-  .app-title-text {
-    display: none;
-  }
-
-  .app-title-icon {
-    display: inline-flex;
-  }
-
-  .app-nav-links {
-    margin-left: 4px;
-  }
-
-  .app-add-button-label {
-    display: none;
-  }
-
-  .app-add-button {
-    min-width: 0 !important;
-    padding: 0 12px !important;
-
-    mat-icon {
-      margin: 0 !important;
-    }
-  }
+  min-height: calc(100vh - 64px);
+  background: #f8fafc;
 }
 
 @media (max-width: 599px) {
   .app-content {
     padding: 12px;
-  }
-
-  .app-nav-links a {
-    padding: 0 8px;
-    min-width: 0;
   }
 }

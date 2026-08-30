@@ -56,7 +56,7 @@ class EmployeeServiceImplTest {
     @Test
     void createEmployeeGeneratesACodeAndOpensAnInitialHireSalaryRecord() {
         EmployeeCreateRequest request = new EmployeeCreateRequest("Ada", "Lovelace", "ada@acme-corp.example",
-                "Engineering", "Senior Software Engineer", "Senior", "United States", "USD",
+                "Engineering", "Senior Software Engineer", "Senior", "United States", null, null, "USD",
                 LocalDate.of(2024, 1, 1), new BigDecimal("120000.00"));
 
         when(employeeRepository.existsByEmail(request.email())).thenReturn(false);
@@ -81,7 +81,7 @@ class EmployeeServiceImplTest {
     @Test
     void createEmployeeRejectsADuplicateEmail() {
         EmployeeCreateRequest request = new EmployeeCreateRequest("Ada", "Lovelace", "ada@acme-corp.example",
-                "Engineering", "Senior Software Engineer", "Senior", "United States", "USD",
+                "Engineering", "Senior Software Engineer", "Senior", "United States", null, null, "USD",
                 LocalDate.of(2024, 1, 1), new BigDecimal("120000.00"));
         when(employeeRepository.existsByEmail(request.email())).thenReturn(true);
 
@@ -118,7 +118,7 @@ class EmployeeServiceImplTest {
         when(employeeRepository.existsByEmail("taken@acme-corp.example")).thenReturn(true);
 
         EmployeeUpdateRequest request = new EmployeeUpdateRequest("Ada", "Lovelace", "taken@acme-corp.example",
-                "Engineering", "Senior Software Engineer", "Senior", "United States", "USD");
+                "Engineering", "Senior Software Engineer", "Senior", "United States", null, null, "USD");
 
         assertThatThrownBy(() -> employeeService.updateEmployee(5L, request))
                 .isInstanceOf(DuplicateEmployeeException.class);

@@ -19,3 +19,18 @@ export interface SalaryBandStat {
   maxAmount: number;
   employeeCount: number;
 }
+
+export interface HeadcountSummary {
+  activeEmployees: number;
+  inactiveEmployees: number;
+  departments: number;
+  countries: number;
+  averageTenureYears: number;
+  newHiresLast90Days: number;
+}
+
+export interface PayrollByCurrency {
+  currency: string;
+  totalAnnualCost: number;
+  employeeCount: number;
+}

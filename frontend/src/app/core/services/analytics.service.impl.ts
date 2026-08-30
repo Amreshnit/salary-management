@@ -3,7 +3,13 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AnalyticsService } from './analytics.service';
-import { CountrySalaryStat, DepartmentSalaryStat, SalaryBandStat } from '../models/analytics.model';
+import {
+  CountrySalaryStat,
+  DepartmentSalaryStat,
+  HeadcountSummary,
+  PayrollByCurrency,
+  SalaryBandStat,
+} from '../models/analytics.model';
 
 @Injectable()
 export class AnalyticsServiceImpl extends AnalyticsService {
@@ -20,5 +26,13 @@ export class AnalyticsServiceImpl extends AnalyticsService {
 
   override salaryBandDistribution(): Observable<SalaryBandStat[]> {
     return this.http.get<SalaryBandStat[]>(`${this.baseUrl}/salary-bands`);
+  }
+
+  override headcountSummary(): Observable<HeadcountSummary> {
+    return this.http.get<HeadcountSummary>(`${this.baseUrl}/headcount-summary`);
+  }
+
+  override payrollByCurrency(): Observable<PayrollByCurrency[]> {
+    return this.http.get<PayrollByCurrency[]>(`${this.baseUrl}/payroll-by-currency`);
   }
 }

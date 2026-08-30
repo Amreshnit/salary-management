@@ -44,7 +44,7 @@ class EmployeeControllerTest {
     void searchEmployeesReturnsAPageOfResults() throws Exception {
         EmployeeResponse employee = new EmployeeResponse(1L, "EMP-00001", "Ada", "Lovelace",
                 "ada@acme-corp.example", "Engineering", "Senior Software Engineer", "Senior",
-                "United States", "USD", LocalDate.of(2024, 1, 1), EmployeeStatus.ACTIVE,
+                "United States", null, null, "USD", LocalDate.of(2024, 1, 1), EmployeeStatus.ACTIVE,
                 new BigDecimal("120000.00"), "USD");
         Page<EmployeeResponse> page = new PageImpl<>(List.of(employee), PageRequest.of(0, 20), 1);
         when(employeeService.searchEmployees(any(), any(), any(), any(), any())).thenReturn(page);
@@ -78,11 +78,11 @@ class EmployeeControllerTest {
     @Test
     void createEmployeeReturns201OnSuccess() throws Exception {
         EmployeeCreateRequest request = new EmployeeCreateRequest("Ada", "Lovelace", "ada@acme-corp.example",
-                "Engineering", "Senior Software Engineer", "Senior", "United States", "USD",
+                "Engineering", "Senior Software Engineer", "Senior", "United States", null, null, "USD",
                 LocalDate.of(2024, 1, 1), new BigDecimal("120000.00"));
         EmployeeResponse response = new EmployeeResponse(1L, "EMP-10001", "Ada", "Lovelace",
                 "ada@acme-corp.example", "Engineering", "Senior Software Engineer", "Senior",
-                "United States", "USD", LocalDate.of(2024, 1, 1), EmployeeStatus.ACTIVE,
+                "United States", null, null, "USD", LocalDate.of(2024, 1, 1), EmployeeStatus.ACTIVE,
                 new BigDecimal("120000.00"), "USD");
         when(employeeService.createEmployee(any())).thenReturn(response);
 

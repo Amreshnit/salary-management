@@ -15,9 +15,11 @@
     </mat-card-header>
     <mat-card-content>
       <div class="profile-grid">
-        <div><span class="label">Employee Code</span>{{ employee.employeeCode }}</div>
+        <div><span class="label">Employee ID</span>{{ employee.employeeCode }} (#{{ employee.id }})</div>
         <div><span class="label">Email</span>{{ employee.email }}</div>
         <div><span class="label">Country</span>{{ employee.country }}</div>
+        <div><span class="label">State / Province</span>{{ employee.state || '—' }}</div>
+        <div class="profile-grid-address"><span class="label">Address</span>{{ employee.address || '—' }}</div>
         <div><span class="label">Seniority</span>{{ employee.seniorityLevel }}</div>
         <div><span class="label">Hire Date</span>{{ employee.hireDate }}</div>
         <div>

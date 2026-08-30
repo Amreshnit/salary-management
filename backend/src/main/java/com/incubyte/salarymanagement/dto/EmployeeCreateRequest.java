@@ -13,6 +13,8 @@ public record EmployeeCreateRequest(
         @NotBlank String jobTitle,
         @NotBlank String seniorityLevel,
         @NotBlank String country,
+        String state,
+        String address,
         @NotBlank @Size(min = 3, max = 3) String currency,
         @NotNull @PastOrPresent LocalDate hireDate,
         @NotNull @Positive BigDecimal startingSalary

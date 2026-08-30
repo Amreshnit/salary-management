@@ -16,6 +16,16 @@ describe('AnalyticsDashboardComponent', () => {
             averageSalaryByDepartment: () => of(departmentStats),
             averageSalaryByCountry: () => of([]),
             salaryBandDistribution: () => of([]),
+            headcountSummary: () =>
+              of({
+                activeEmployees: 9800,
+                inactiveEmployees: 200,
+                departments: 10,
+                countries: 9,
+                averageTenureYears: 2.3,
+                newHiresLast90Days: 150,
+              }),
+            payrollByCurrency: () => of([]),
           },
         },
       ],
@@ -66,5 +76,13 @@ describe('AnalyticsDashboardComponent', () => {
     const component = createComponent([]);
 
     expect(component.loading()).toBe(false);
+  });
+
+  it('builds KPI cards from the headcount summary, including a derived attrition rate', () => {
+    const component = createComponent([]);
+
+    const cards = component.kpiCards();
+    expect(cards.find((card) => card.label === 'Active Employees')?.value).toBe('9,800');
+    expect(cards.find((card) => card.label === 'Attrition Rate')?.value).toBe('2.0%');
   });
 });

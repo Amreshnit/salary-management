@@ -5,15 +5,29 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AnalyticsService } from '../../../core/services/analytics.service';
-import { CountrySalaryStat, DepartmentSalaryStat, SalaryBandStat } from '../../../core/models/analytics.model';
+import {
+  CountrySalaryStat,
+  DepartmentSalaryStat,
+  HeadcountSummary,
+  PayrollByCurrency,
+  SalaryBandStat,
+} from '../../../core/models/analytics.model';
 import { colorForBand, colorForCategory } from '../../../shared/chart-colors';
 
 interface CurrencyGroup<T> {
   currency: string;
   rows: T[];
   maxAverageAmount: number;
+}
+
+interface KpiCard {
+  label: string;
+  value: string;
+  icon: string;
+  accent: string;
 }
 
 @Component({
@@ -25,6 +39,7 @@ interface CurrencyGroup<T> {
     MatProgressSpinnerModule,
     MatTabsModule,
     MatButtonToggleModule,
+    MatIconModule,
   ],
   templateUrl: './analytics-dashboard.component.html',
   styleUrl: './analytics-dashboard.component.scss',
@@ -36,6 +51,8 @@ export class AnalyticsDashboardComponent implements OnInit {
   readonly departmentStats = signal<DepartmentSalaryStat[]>([]);
   readonly countryStats = signal<CountrySalaryStat[]>([]);
   readonly bandStats = signal<SalaryBandStat[]>([]);
+  readonly headcountSummary = signal<HeadcountSummary | null>(null);
+  readonly payrollByCurrency = signal<PayrollByCurrency[]>([]);
   readonly selectedCurrency = signal<string | null>(null);
   readonly salaryBandColumns = ['band', 'range', 'employeeCount'];
 
@@ -43,6 +60,32 @@ export class AnalyticsDashboardComponent implements OnInit {
     const currencies = new Set(this.departmentStats().map((row) => row.currency));
     return Array.from(currencies).sort();
   });
+
+  readonly kpiCards = computed<KpiCard[]>(() => {
+    const summary = this.headcountSummary();
+    if (!summary) {
+      return [];
+    }
+    const totalHeadcount = summary.activeEmployees + summary.inactiveEmployees;
+    const attritionRate = totalHeadcount === 0 ? 0 : (summary.inactiveEmployees / totalHeadcount) * 100;
+    return [
+      { label: 'Active Employees', value: summary.activeEmployees.toLocaleString(), icon: 'groups', accent: '#6366f1' },
+      { label: 'Departments', value: summary.departments.toString(), icon: 'apartment', accent: '#14b8a6' },
+      { label: 'Countries', value: summary.countries.toString(), icon: 'public', accent: '#f59e0b' },
+      {
+        label: 'Avg. Tenure',
+        value: `${summary.averageTenureYears.toFixed(1)} yrs`,
+        icon: 'schedule',
+        accent: '#8b5cf6',
+      },
+      { label: 'New Hires (90d)', value: summary.newHiresLast90Days.toString(), icon: 'person_add', accent: '#22c55e' },
+      { label: 'Attrition Rate', value: `${attritionRate.toFixed(1)}%`, icon: 'trending_down', accent: '#ef4444' },
+    ];
+  });
+
+  readonly currentPayroll = computed(() =>
+    this.payrollByCurrency().find((row) => row.currency === this.selectedCurrency()),
+  );
 
   private readonly departmentGroupsByCurrency = computed(() =>
     this.groupByCurrency(this.departmentStats(), (row) => row.averageAmount),
@@ -63,6 +106,8 @@ export class AnalyticsDashboardComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.analyticsService.headcountSummary().subscribe((summary) => this.headcountSummary.set(summary));
+    this.analyticsService.payrollByCurrency().subscribe((rows) => this.payrollByCurrency.set(rows));
     this.analyticsService.averageSalaryByDepartment().subscribe((stats) => {
       this.departmentStats.set(stats);
       if (!this.selectedCurrency() && stats.length > 0) {
