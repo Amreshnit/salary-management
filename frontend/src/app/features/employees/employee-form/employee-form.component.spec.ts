@@ -103,4 +103,18 @@ describe('EmployeeFormComponent', () => {
 
     expect(component.saving()).toBe(false);
   });
+
+  it('enables saving in edit mode without requiring the hidden hire date/salary fields', () => {
+    const getEmployeeById = vi.fn().mockReturnValue(of(buildEmployee()));
+    const updateEmployee = vi.fn().mockReturnValue(of(buildEmployee()));
+    const { component } = createComponent({ getEmployeeById, updateEmployee }, '1');
+
+    component.form.controls.jobTitle.setValue('Distinguished Engineer');
+
+    expect(component.form.valid).toBe(true);
+
+    component.submit();
+
+    expect(updateEmployee).toHaveBeenCalled();
+  });
 });

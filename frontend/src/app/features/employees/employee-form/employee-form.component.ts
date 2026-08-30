@@ -82,6 +82,10 @@ export class EmployeeFormComponent implements OnInit {
     if (idParam) {
       const id = Number(idParam);
       this.employeeId.set(id);
+      this.form.controls.hireDate.clearValidators();
+      this.form.controls.hireDate.updateValueAndValidity();
+      this.form.controls.startingSalary.clearValidators();
+      this.form.controls.startingSalary.updateValueAndValidity();
       this.loading.set(true);
       this.employeeService.getEmployeeById(id).subscribe((employee) => {
         const country = this.countries.find((candidate) => candidate.name === employee.country);
