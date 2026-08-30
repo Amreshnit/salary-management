@@ -1,7 +1,23 @@
+.app-toolbar {
+  gap: 4px;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.app-title-icon {
+  display: none;
+}
+
 .app-nav-links {
   display: flex;
-  gap: 8px;
-  margin-left: 24px;
+  gap: 4px;
+  margin-left: 16px;
 }
 
 .app-spacer {
@@ -15,13 +31,40 @@
   overflow-x: hidden;
 }
 
+@media (max-width: 720px) {
+  .app-title-text {
+    display: none;
+  }
+
+  .app-title-icon {
+    display: inline-flex;
+  }
+
+  .app-nav-links {
+    margin-left: 4px;
+  }
+
+  .app-add-button-label {
+    display: none;
+  }
+
+  .app-add-button {
+    min-width: 0 !important;
+    padding: 0 12px !important;
+
+    mat-icon {
+      margin: 0 !important;
+    }
+  }
+}
+
 @media (max-width: 599px) {
   .app-content {
     padding: 12px;
   }
 
-  .app-nav-links {
-    margin-left: 8px;
-    gap: 0;
+  .app-nav-links a {
+    padding: 0 8px;
+    min-width: 0;
   }
 }

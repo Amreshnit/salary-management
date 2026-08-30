@@ -4,9 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { CountrySalaryStat, DepartmentSalaryStat, SalaryBandStat } from '../../../core/models/analytics.model';
+import { colorForBand, colorForCategory } from '../../../shared/chart-colors';
 
 interface CurrencyGroup<T> {
   currency: string;
@@ -16,7 +18,14 @@ interface CurrencyGroup<T> {
 
 @Component({
   selector: 'app-analytics-dashboard',
-  imports: [DecimalPipe, MatCardModule, MatTableModule, MatProgressSpinnerModule, MatTabsModule],
+  imports: [
+    DecimalPipe,
+    MatCardModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatButtonToggleModule,
+  ],
   templateUrl: './analytics-dashboard.component.html',
   styleUrl: './analytics-dashboard.component.scss',
 })
@@ -27,14 +36,39 @@ export class AnalyticsDashboardComponent implements OnInit {
   readonly departmentStats = signal<DepartmentSalaryStat[]>([]);
   readonly countryStats = signal<CountrySalaryStat[]>([]);
   readonly bandStats = signal<SalaryBandStat[]>([]);
+  readonly selectedCurrency = signal<string | null>(null);
   readonly salaryBandColumns = ['band', 'range', 'employeeCount'];
 
-  readonly departmentGroups = computed(() => this.groupByCurrency(this.departmentStats(), (row) => row.averageAmount));
-  readonly countryGroups = computed(() => this.groupByCurrency(this.countryStats(), (row) => row.averageAmount));
-  readonly bandGroups = computed(() => this.groupBandsByCurrency(this.bandStats()));
+  readonly availableCurrencies = computed(() => {
+    const currencies = new Set(this.departmentStats().map((row) => row.currency));
+    return Array.from(currencies).sort();
+  });
+
+  private readonly departmentGroupsByCurrency = computed(() =>
+    this.groupByCurrency(this.departmentStats(), (row) => row.averageAmount),
+  );
+  private readonly countryGroupsByCurrency = computed(() =>
+    this.groupByCurrency(this.countryStats(), (row) => row.averageAmount),
+  );
+  private readonly bandGroupsByCurrency = computed(() => this.groupBandsByCurrency(this.bandStats()));
+
+  readonly currentDepartmentGroup = computed(() =>
+    this.departmentGroupsByCurrency().find((group) => group.currency === this.selectedCurrency()),
+  );
+  readonly currentCountryGroup = computed(() =>
+    this.countryGroupsByCurrency().find((group) => group.currency === this.selectedCurrency()),
+  );
+  readonly currentBandGroup = computed(() =>
+    this.bandGroupsByCurrency().find((group) => group.currency === this.selectedCurrency()),
+  );
 
   ngOnInit(): void {
-    this.analyticsService.averageSalaryByDepartment().subscribe((stats) => this.departmentStats.set(stats));
+    this.analyticsService.averageSalaryByDepartment().subscribe((stats) => {
+      this.departmentStats.set(stats);
+      if (!this.selectedCurrency() && stats.length > 0) {
+        this.selectedCurrency.set(this.availableCurrencies()[0]);
+      }
+    });
     this.analyticsService.averageSalaryByCountry().subscribe((stats) => this.countryStats.set(stats));
     this.analyticsService.salaryBandDistribution().subscribe((stats) => {
       this.bandStats.set(stats);
@@ -42,8 +76,20 @@ export class AnalyticsDashboardComponent implements OnInit {
     });
   }
 
+  selectCurrency(currency: string): void {
+    this.selectedCurrency.set(currency);
+  }
+
   barWidthPercent(value: number, max: number): number {
     return max === 0 ? 0 : Math.round((value / max) * 100);
+  }
+
+  colorForCategory(categoryName: string): string {
+    return colorForCategory(categoryName);
+  }
+
+  colorForBand(band: number, totalBands: number): string {
+    return colorForBand(band, totalBands);
   }
 
   private groupByCurrency<T extends { currency: string }>(

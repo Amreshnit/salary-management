@@ -2,18 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { EmployeeService } from './employee.service';
+import { EmployeeServiceImpl } from './employee.service.impl';
 import { Employee } from '../models/employee.model';
 
-describe('EmployeeService', () => {
-  let service: EmployeeService;
+describe('EmployeeServiceImpl', () => {
+  let service: EmployeeServiceImpl;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [EmployeeService, provideHttpClient(), provideHttpClientTesting()],
+      providers: [EmployeeServiceImpl, provideHttpClient(), provideHttpClientTesting()],
     });
-    service = TestBed.inject(EmployeeService);
+    service = TestBed.inject(EmployeeServiceImpl);
     httpMock = TestBed.inject(HttpTestingController);
   });
 

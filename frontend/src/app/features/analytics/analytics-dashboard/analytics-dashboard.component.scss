@@ -1,59 +1,138 @@
+.page-header {
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+}
+
 .hint {
   color: rgba(0, 0, 0, 0.6);
   max-width: 640px;
+  margin: 0;
+  font-size: 14px;
 }
 
 .loading {
   display: flex;
   justify-content: center;
-  padding: 48px;
+  padding: 64px;
+}
+
+.currency-picker-scroll {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+
+.currency-picker {
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.analytics-tabs {
+  ::ng-deep .mdc-tab {
+    min-width: 120px;
+  }
 }
 
 .tab-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 16px;
+  padding-top: 20px;
 }
 
-.currency-card {
-  padding-bottom: 8px;
+.chart-card {
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08) !important;
 }
 
 .bar-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
+  gap: 18px;
 }
 
 .bar-row {
   display: grid;
-  grid-template-columns: 160px 1fr 160px;
+  grid-template-columns: 160px 1fr 110px;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 .bar-label {
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.75);
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.78);
 }
 
 .bar-track {
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  height: 18px;
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 999px;
+  height: 28px;
   overflow: hidden;
+  min-width: 0;
 }
 
 .bar-fill {
-  background: #3f51b5;
   height: 100%;
-  border-radius: 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
+  min-width: 40px;
+  transition: width 0.4s ease;
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.08);
 }
 
-.bar-value {
-  font-size: 13px;
+.bar-fill-value {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bar-count {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.55);
   text-align: right;
-  color: rgba(0, 0, 0, 0.75);
+
+  @media (max-width: 640px) {
+    text-align: left;
+  }
+}
+
+.band-strip {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.band-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.band-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }

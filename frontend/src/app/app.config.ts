@@ -5,6 +5,10 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { errorInterceptor } from './core/services/error.interceptor';
+import { EmployeeService } from './core/services/employee.service';
+import { EmployeeServiceImpl } from './core/services/employee.service.impl';
+import { AnalyticsService } from './core/services/analytics.service';
+import { AnalyticsServiceImpl } from './core/services/analytics.service.impl';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,5 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([errorInterceptor])),
+    { provide: EmployeeService, useClass: EmployeeServiceImpl },
+    { provide: AnalyticsService, useClass: AnalyticsServiceImpl },
   ],
 };

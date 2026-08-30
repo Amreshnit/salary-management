@@ -1,13 +1,16 @@
-<mat-toolbar color="primary">
-  <span>Salary Management</span>
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title">
+    <mat-icon class="app-title-icon">payments</mat-icon>
+    <span class="app-title-text">Salary Management</span>
+  </span>
   <nav class="app-nav-links">
     <a mat-button routerLink="/employees" routerLinkActive="active">Employees</a>
     <a mat-button routerLink="/analytics" routerLinkActive="active">Analytics</a>
   </nav>
   <span class="app-spacer"></span>
-  <a mat-raised-button color="accent" routerLink="/employees/new">
+  <a mat-raised-button color="accent" routerLink="/employees/new" class="app-add-button">
     <mat-icon>person_add</mat-icon>
-    Add Employee
+    <span class="app-add-button-label">Add Employee</span>
   </a>
 </mat-toolbar>
 

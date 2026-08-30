@@ -1,52 +1,76 @@
-<h1>Analytics</h1>
-<p class="hint">
-  Figures are grouped by currency rather than converted to one reporting currency &mdash; see the requirements doc
-  for why.
-</p>
+<div class="page-header">
+  <h1>Analytics</h1>
+  <p class="hint">
+    Figures are grouped by currency rather than converted to one reporting currency &mdash; see the requirements doc
+    for why.
+  </p>
+</div>
 
 @if (loading()) {
   <div class="loading">
-    <mat-spinner diameter="40" />
+    <mat-spinner diameter="48" />
   </div>
 } @else {
-  <mat-tab-group>
-    <mat-tab label="Average Salary by Department">
+  <div class="currency-picker-scroll">
+    <mat-button-toggle-group class="currency-picker" [value]="selectedCurrency()">
+      @for (currency of availableCurrencies(); track currency) {
+        <mat-button-toggle [value]="currency" (click)="selectCurrency(currency)">{{ currency }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+
+  <mat-tab-group class="analytics-tabs" animationDuration="200ms">
+    <mat-tab label="By Department">
       <div class="tab-content">
-        @for (group of departmentGroups(); track group.currency) {
-          <mat-card class="currency-card">
-            <mat-card-title>{{ group.currency }}</mat-card-title>
-            <div class="bar-list">
-              @for (row of group.rows; track row.department) {
-                <div class="bar-row">
-                  <span class="bar-label">{{ row.department }}</span>
-                  <div class="bar-track">
-                    <div class="bar-fill" [style.width.%]="barWidthPercent(row.averageAmount, group.maxAverageAmount)"></div>
+        @if (currentDepartmentGroup(); as group) {
+          <mat-card class="chart-card">
+            <mat-card-content>
+              <div class="bar-list">
+                @for (row of group.rows; track row.department) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ row.department }}</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        [style.width.%]="barWidthPercent(row.averageAmount, group.maxAverageAmount)"
+                        [style.background]="colorForCategory(row.department)"
+                      >
+                        <span class="bar-fill-value">{{ row.averageAmount | number: '1.0-0' }}</span>
+                      </div>
+                    </div>
+                    <span class="bar-count">{{ row.employeeCount }} people</span>
                   </div>
-                  <span class="bar-value">{{ row.averageAmount | number: '1.0-0' }} ({{ row.employeeCount }})</span>
-                </div>
-              }
-            </div>
+                }
+              </div>
+            </mat-card-content>
           </mat-card>
         }
       </div>
     </mat-tab>
 
-    <mat-tab label="Average Salary by Country">
+    <mat-tab label="By Country">
       <div class="tab-content">
-        @for (group of countryGroups(); track group.currency) {
-          <mat-card class="currency-card">
-            <mat-card-title>{{ group.currency }}</mat-card-title>
-            <div class="bar-list">
-              @for (row of group.rows; track row.country) {
-                <div class="bar-row">
-                  <span class="bar-label">{{ row.country }}</span>
-                  <div class="bar-track">
-                    <div class="bar-fill" [style.width.%]="barWidthPercent(row.averageAmount, group.maxAverageAmount)"></div>
+        @if (currentCountryGroup(); as group) {
+          <mat-card class="chart-card">
+            <mat-card-content>
+              <div class="bar-list">
+                @for (row of group.rows; track row.country) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ row.country }}</span>
+                    <div class="bar-track">
+                      <div
+                        class="bar-fill"
+                        [style.width.%]="barWidthPercent(row.averageAmount, group.maxAverageAmount)"
+                        [style.background]="colorForCategory(row.country)"
+                      >
+                        <span class="bar-fill-value">{{ row.averageAmount | number: '1.0-0' }}</span>
+                      </div>
+                    </div>
+                    <span class="bar-count">{{ row.employeeCount }} people</span>
                   </div>
-                  <span class="bar-value">{{ row.averageAmount | number: '1.0-0' }} ({{ row.employeeCount }})</span>
-                </div>
-              }
-            </div>
+                }
+              </div>
+            </mat-card-content>
           </mat-card>
         }
       </div>
@@ -54,30 +78,48 @@
 
     <mat-tab label="Salary Bands">
       <div class="tab-content">
-        @for (group of bandGroups(); track group.currency) {
-          <mat-card class="currency-card">
-            <mat-card-title>{{ group.currency }}</mat-card-title>
-            <table mat-table [dataSource]="group.rows">
-              <ng-container matColumnDef="band">
-                <th mat-header-cell *matHeaderCellDef>Band</th>
-                <td mat-cell *matCellDef="let row">{{ row.band }}</td>
-              </ng-container>
+        @if (currentBandGroup(); as group) {
+          <mat-card class="chart-card">
+            <mat-card-content>
+              <div class="band-strip">
+                @for (row of group.rows; track row.band) {
+                  <div
+                    class="band-segment"
+                    [style.background]="colorForBand(row.band, group.rows.length)"
+                    [style.flex-grow]="row.employeeCount"
+                  >
+                    {{ row.employeeCount }}
+                  </div>
+                }
+              </div>
 
-              <ng-container matColumnDef="range">
-                <th mat-header-cell *matHeaderCellDef>Range</th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.minAmount | number: '1.0-0' }} &ndash; {{ row.maxAmount | number: '1.0-0' }}
-                </td>
-              </ng-container>
+              <div class="table-scroll">
+                <table mat-table [dataSource]="group.rows">
+                  <ng-container matColumnDef="band">
+                    <th mat-header-cell *matHeaderCellDef>Band</th>
+                    <td mat-cell *matCellDef="let row">
+                      <span class="band-dot" [style.background]="colorForBand(row.band, group.rows.length)"></span>
+                      {{ row.band }}
+                    </td>
+                  </ng-container>
 
-              <ng-container matColumnDef="employeeCount">
-                <th mat-header-cell *matHeaderCellDef>Employees</th>
-                <td mat-cell *matCellDef="let row">{{ row.employeeCount }}</td>
-              </ng-container>
+                  <ng-container matColumnDef="range">
+                    <th mat-header-cell *matHeaderCellDef>Range</th>
+                    <td mat-cell *matCellDef="let row">
+                      {{ row.minAmount | number: '1.0-0' }} &ndash; {{ row.maxAmount | number: '1.0-0' }}
+                    </td>
+                  </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="salaryBandColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: salaryBandColumns"></tr>
-            </table>
+                  <ng-container matColumnDef="employeeCount">
+                    <th mat-header-cell *matHeaderCellDef>Employees</th>
+                    <td mat-cell *matCellDef="let row">{{ row.employeeCount }}</td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="salaryBandColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: salaryBandColumns"></tr>
+                </table>
+              </div>
+            </mat-card-content>
           </mat-card>
         }
       </div>

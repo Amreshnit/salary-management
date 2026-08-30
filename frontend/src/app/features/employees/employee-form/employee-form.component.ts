@@ -9,6 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 
 import { EmployeeService } from '../../../core/services/employee.service';
 import { COUNTRIES, DEPARTMENTS, SENIORITY_LEVELS } from '../../../core/models/reference-data';
@@ -25,6 +26,7 @@ import { COUNTRIES, DEPARTMENTS, SENIORITY_LEVELS } from '../../../core/models/r
     MatNativeDateModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
   templateUrl: './employee-form.component.html',
   styleUrl: './employee-form.component.scss',
