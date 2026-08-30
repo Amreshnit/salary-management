@@ -4,10 +4,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { EmployeeServiceImpl } from './employee.service.impl';
 import { Employee } from '../models/employee.model';
+import { environment } from '../../../environments/environment';
 
 describe('EmployeeServiceImpl', () => {
   let service: EmployeeServiceImpl;
   let httpMock: HttpTestingController;
+  const employeesUrl = `${environment.apiBaseUrl}/api/v1/employees`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,7 +30,7 @@ describe('EmployeeServiceImpl', () => {
 
     const request = httpMock.expectOne(
       (req) =>
-        req.url === '/api/v1/employees' &&
+        req.url === employeesUrl &&
         req.params.get('department') === 'Engineering' &&
         req.params.get('status') === 'ACTIVE' &&
         req.params.get('q') === 'ada' &&
@@ -43,7 +45,7 @@ describe('EmployeeServiceImpl', () => {
     service.searchEmployees({}).subscribe();
 
     const request = httpMock.expectOne(
-      (req) => req.url === '/api/v1/employees' && req.params.get('page') === '0' && req.params.get('size') === '20',
+      (req) => req.url === employeesUrl && req.params.get('page') === '0' && req.params.get('size') === '20',
     );
     request.flush({ content: [], totalElements: 0, totalPages: 0, number: 0, size: 20 });
   });
@@ -65,7 +67,7 @@ describe('EmployeeServiceImpl', () => {
     });
     request$.subscribe();
 
-    const request = httpMock.expectOne('/api/v1/employees');
+    const request = httpMock.expectOne(employeesUrl);
     expect(request.request.method).toBe('POST');
     expect(request.request.body.email).toBe('ada@acme-corp.example');
     request.flush({} as Employee);
@@ -74,7 +76,7 @@ describe('EmployeeServiceImpl', () => {
   it('sends a delete request to deactivate an employee', () => {
     service.deactivateEmployee(42).subscribe();
 
-    const request = httpMock.expectOne('/api/v1/employees/42');
+    const request = httpMock.expectOne(`${employeesUrl}/42`);
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
   });
@@ -84,7 +86,7 @@ describe('EmployeeServiceImpl', () => {
       .addSalaryRecord(7, { amount: 100000, currency: 'USD', effectiveFrom: '2025-01-01', reason: 'RAISE' })
       .subscribe();
 
-    const request = httpMock.expectOne('/api/v1/employees/7/salary-records');
+    const request = httpMock.expectOne(`${employeesUrl}/7/salary-records`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body.reason).toBe('RAISE');
     request.flush({});
