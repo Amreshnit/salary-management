@@ -127,3 +127,8 @@ connector everywhere.
   sizes well beyond 10k this would move to a read replica or a
   precomputed/materialized view; at 10k rows with the indexes above it's not
   necessary yet.
+- CORS defaults to allowing any origin (`APP_CORS_ALLOWED_ORIGINS=*`) so the
+  free-tier backend and frontend deploys don't have to happen in a specific
+  order (see `README.md`'s deploy section). A real deployment would set this
+  to the exact known frontend origin instead — the app reads it from an env
+  var specifically so that's a config change, not a code change.

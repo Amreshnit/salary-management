@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm run build -- --configuration production",
+  "outputDirectory": "dist/salary-management-ui/browser",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

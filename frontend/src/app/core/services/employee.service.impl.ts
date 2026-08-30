@@ -6,11 +6,12 @@ import { EmployeeService } from './employee.service';
 import { Employee, EmployeeCreateRequest, EmployeeSearchParams, EmployeeUpdateRequest } from '../models/employee.model';
 import { Page } from '../models/page.model';
 import { SalaryRecord, SalaryRecordRequest } from '../models/salary-record.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class EmployeeServiceImpl extends EmployeeService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/api/v1/employees';
+  private readonly baseUrl = `${environment.apiBaseUrl}/api/v1/employees`;
 
   override searchEmployees(params: EmployeeSearchParams): Observable<Page<Employee>> {
     let httpParams = new HttpParams();

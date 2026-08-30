@@ -10,11 +10,12 @@ import {
   PayrollByCurrency,
   SalaryBandStat,
 } from '../models/analytics.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AnalyticsServiceImpl extends AnalyticsService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/api/v1/analytics';
+  private readonly baseUrl = `${environment.apiBaseUrl}/api/v1/analytics`;
 
   override averageSalaryByDepartment(): Observable<DepartmentSalaryStat[]> {
     return this.http.get<DepartmentSalaryStat[]>(`${this.baseUrl}/avg-salary-by-department`);
