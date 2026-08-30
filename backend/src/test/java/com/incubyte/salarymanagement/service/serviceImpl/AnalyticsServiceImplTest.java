@@ -1,4 +1,4 @@
-package com.incubyte.salarymanagement.service;
+package com.incubyte.salarymanagement.service.serviceImpl;
 
 import com.incubyte.salarymanagement.dto.DepartmentSalaryStat;
 import com.incubyte.salarymanagement.dto.HeadcountSummary;

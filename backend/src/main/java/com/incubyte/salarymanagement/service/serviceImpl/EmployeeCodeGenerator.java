@@ -1,4 +1,4 @@
-package com.incubyte.salarymanagement.service;
+package com.incubyte.salarymanagement.service.serviceImpl;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

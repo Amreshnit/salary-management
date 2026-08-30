@@ -1,4 +1,4 @@
-package com.incubyte.salarymanagement.service;
+package com.incubyte.salarymanagement.service.serviceImpl;
 
 import com.incubyte.salarymanagement.domain.Employee;
 import com.incubyte.salarymanagement.domain.SalaryChangeReason;

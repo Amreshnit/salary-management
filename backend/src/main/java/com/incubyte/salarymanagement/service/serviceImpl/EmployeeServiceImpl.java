@@ -1,4 +1,4 @@
-package com.incubyte.salarymanagement.service;
+package com.incubyte.salarymanagement.service.serviceImpl;
 
 import com.incubyte.salarymanagement.domain.Employee;
 import com.incubyte.salarymanagement.domain.EmployeeStatus;
@@ -9,6 +9,8 @@ import com.incubyte.salarymanagement.dto.EmployeeResponse;
 import com.incubyte.salarymanagement.dto.EmployeeUpdateRequest;
 import com.incubyte.salarymanagement.repository.EmployeeRepository;
 import com.incubyte.salarymanagement.repository.SalaryRecordRepository;
+import com.incubyte.salarymanagement.service.EmployeeService;
+import com.incubyte.salarymanagement.service.SalaryService;
 import com.incubyte.salarymanagement.web.exception.DuplicateEmployeeException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.incubyte.salarymanagement.service;
+package com.incubyte.salarymanagement.service.serviceImpl;
 
 import com.incubyte.salarymanagement.dto.CountrySalaryStat;
 import com.incubyte.salarymanagement.dto.DepartmentSalaryStat;
@@ -7,6 +7,7 @@ import com.incubyte.salarymanagement.dto.PayrollByCurrency;
 import com.incubyte.salarymanagement.dto.SalaryBandStat;
 import com.incubyte.salarymanagement.repository.AnalyticsRepository;
 import com.incubyte.salarymanagement.repository.projection.HeadcountSummaryProjection;
+import com.incubyte.salarymanagement.service.AnalyticsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
