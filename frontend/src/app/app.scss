@@ -12,4 +12,16 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 599px) {
+  .app-content {
+    padding: 12px;
+  }
+
+  .app-nav-links {
+    margin-left: 8px;
+    gap: 0;
+  }
 }

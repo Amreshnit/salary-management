@@ -51,6 +51,7 @@
     <mat-spinner diameter="40" />
   </div>
 } @else {
+  <div class="table-scroll">
   <table mat-table [dataSource]="employees()" class="employee-table">
     <ng-container matColumnDef="employeeCode">
       <th mat-header-cell *matHeaderCellDef>Code</th>
@@ -96,6 +97,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="openEmployee(row)" class="employee-row"></tr>
   </table>
+  </div>
 
   @if (employees().length === 0) {
     <p class="empty-state">No employees match these filters.</p>

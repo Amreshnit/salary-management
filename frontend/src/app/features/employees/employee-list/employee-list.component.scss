@@ -10,8 +10,14 @@
   }
 }
 
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .employee-table {
   width: 100%;
+  min-width: 720px;
 }
 
 .employee-row {
