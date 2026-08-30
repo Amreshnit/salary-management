@@ -8,6 +8,15 @@ See [`docs/requirements.md`](docs/requirements.md) for scope/goals,
 [`docs/architecture.md`](docs/architecture.md) for the design, and
 [`docs/ai-usage.md`](docs/ai-usage.md) for how AI tools were used.
 
+## Live demo
+
+- **App**: https://salary-management-one.vercel.app
+- **API**: https://salary-management-api-wqir.onrender.com/api/v1
+
+Both are on free hosting tiers. The backend spins down after inactivity and
+can take 30-60 seconds to respond on the first request after a while —
+that's expected, not a bug.
+
 ## Stack
 
 - **Backend**: Java 21, Spring Boot 3, Spring Data JPA, Flyway, PostgreSQL
