@@ -74,6 +74,53 @@ the code (compiling, booting the server, hitting the API, loading the
 UI in a real browser at multiple viewport sizes) rather than trusting
 that generated code was correct because it looked plausible.
 
+## Iterating from real usage, not just the original spec
+
+A good chunk of this project didn't come from the original requirements —
+it came from actually clicking around the app after it was running locally
+and noticing things that only show up once a real person uses a real
+screen. A few examples, in plain terms:
+
+- The "Save Changes" button on the edit-employee screen looked broken —
+  clicking into any field and changing it never turned the button on. The
+  actual cause: two fields (hire date, starting salary) are hidden on the
+  edit screen because you only set them once, when the employee is first
+  created — but they were still sitting in the form underneath, still
+  marked as required, and one of them defaulted to a number the form
+  considered invalid. So the form was quietly invalid the whole time, no
+  matter what you typed elsewhere. Once someone actually tried editing an
+  employee and reported "the button won't turn on," it took minutes to spot
+  and fix — this is exactly the kind of bug that's invisible by just
+  reading the code and only shows up by using the screen.
+- Search box showed "search by email" as a hint, but the results table had
+  no email column to actually check that against — added one.
+- Deactivating someone was a dead end — there was no way to undo it from the
+  UI. Fixed by adding an "Activate" button that mirrors it.
+- After adding a way to permanently delete an employee, the same "one popup,
+  click confirm" pattern used for deactivating felt too easy for something
+  that can't be undone — so delete got its own, stricter popup that only
+  unlocks once you type the word "DELETE."
+- Right after wiring up the Activate/Deactivate buttons, deactivating simply
+  stopped doing anything (delete still worked fine). The cause: the backend
+  had a list of which HTTP request types it would accept from the browser,
+  and the new activate/deactivate calls used a type (`PATCH`) that wasn't on
+  that list — so the browser silently refused to even send the request.
+  Caught because the person testing it said plainly "deactivate isn't
+  deactivating, but delete works" — that one sentence was enough to point
+  straight at "something method-specific changed between the two," which is
+  exactly what the fix turned out to be.
+- Success and failure messages started out inconsistent — some actions
+  silently succeeded with no feedback, errors sometimes showed raw backend
+  text. Standardized on one simple rule: green pop-up message for "it
+  worked," red pop-up message in plain English for "it didn't," used
+  everywhere something gets saved, changed, or deleted.
+
+None of these were things a written spec would have caught up front — they
+only became obvious by using the app the way an HR Manager actually would,
+which is the same reason this project kept a tight loop of "build a bit →
+run it for real → fix what's actually wrong" instead of writing the whole
+thing once from a plan and calling it done.
+
 ## Tools used
 
 - Claude Code (Sonnet) — architecture discussion, code generation across

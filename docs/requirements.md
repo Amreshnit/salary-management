@@ -18,21 +18,39 @@ by country, by pay band).
 
 ## In scope
 
-1. **Employee records** — create, view, update, and deactivate employees
-   (name, email, department, job title, seniority level, country, currency,
-   hire date, status).
+1. **Employee records** — create, view, and update employees (name, email,
+   department, job title, seniority level, country, currency, hire date,
+   status). An employee can also be:
+   - **Deactivated** — marks them as no longer active, but keeps every bit of
+     their data. This is reversible.
+   - **Activated again** — undoes a deactivation. If you can turn something
+     off, you should be able to turn it back on; there's no reason this
+     should be a one-way door.
+   - **Deleted permanently** — actually removes the employee and their whole
+     salary history from the database. This one *can't* be undone, so the app
+     makes you type the word "DELETE" into a box before it will let you go
+     through with it. That's a deliberately bigger speed bump than the
+     "are you sure?" popup used for deactivating, because the two actions
+     don't carry the same risk.
 2. **Salary history, not overwrites** — salary changes are recorded as new,
    effective-dated records (reason: HIRE, RAISE, PROMOTION, ADJUSTMENT) rather
    than mutating a single "current salary" field, so history is always
    auditable and "what did they earn on date X" is answerable.
 3. **Search & filter** — find employees by name/code/email, filter by
    department, country, status; server-side pagination (required at 10k+ rows).
+   The department and country filter lists aren't typed in anywhere — they're
+   read straight from whatever's actually in the database, so they can never
+   go stale.
 4. **Basic analytics** — average salary by department, average salary by
    country, and salary-band distribution, to directly answer "how do we pay
    people" at a glance.
 5. **Seeding** — a script that generates 10,000 realistic synthetic employees
    (varied countries, departments, seniority, and salary distributions) so the
    app can be evaluated at realistic scale immediately.
+6. **Clear feedback on every action** — when something works, the user sees a
+   short green message confirming it (e.g. "Employee created successfully").
+   When something fails, they see a red message that explains what went
+   wrong in plain terms — never a raw error code or a stack trace.
 
 ## Deliberately out of scope (and why)
 

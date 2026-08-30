@@ -194,6 +194,17 @@ Key endpoints:
 
 - `GET/POST /api/v1/employees`, `GET/PUT /api/v1/employees/{id}` — CRUD +
   search (`q`, `department`, `country`, `status`, pagination).
+- `PATCH /api/v1/employees/{id}/deactivate`, `PATCH /api/v1/employees/{id}/activate`
+  — flip an employee's status back and forth. Both are reversible, so both are
+  a plain confirm-and-go action in the UI.
+- `DELETE /api/v1/employees/{id}` — a **real, permanent delete**: removes the
+  employee row and every salary record tied to it (cascade delete). This is
+  the one destructive, irreversible endpoint in the whole API, which is why
+  the DELETE HTTP verb is reserved for it specifically instead of being reused
+  for "deactivate" (an earlier version of this API had `DELETE` do a soft
+  deactivate — that was fixed once a real hard-delete was added, since a
+  single verb shouldn't mean two very different things depending on how
+  dangerous you feel that day).
 - `GET /api/v1/employees/departments`, `GET /api/v1/employees/countries` —
   **distinct values read straight from the database** (`SELECT DISTINCT ...
   ORDER BY ...`), specifically so the Employee List filters and the Add/Edit
@@ -232,6 +243,26 @@ the backend is running.
   from the analytics response itself (`departmentStats().map(row =>
   row.currency)`), not a hardcoded currency list, so it only ever shows
   currencies that actually exist in the seeded data.
+- `core/services/notification.service.ts` — a small wrapper around Angular
+  Material's snackbar with just two methods, `success(message)` and
+  `error(message)`. Every place in the app that saves, updates, or deletes
+  something calls one of these instead of rolling its own popup, so every
+  toast in the app looks and behaves the same way: green background for
+  success, red for errors, always in the same corner of the screen. The
+  global HTTP error handler (`error.interceptor.ts`) also goes through this
+  same service, so a failed request anywhere in the app shows the same style
+  of red toast without every component needing its own error-handling code —
+  and it turns the backend's raw error response into a plain sentence
+  (e.g. "That record already exists" instead of an HTTP status code).
+- `shared/confirm-dialog/` — two different confirmation popups, matched to
+  how dangerous the action actually is. `ConfirmDialogComponent` is a plain
+  "are you sure?" with Cancel/Confirm, used for reversible actions
+  (deactivate, activate). `DeleteConfirmDialogComponent` is used only for
+  the permanent-delete action: it explains the action can't be undone and
+  keeps the confirm button disabled until the user types the word "DELETE"
+  into a text box. The extra typing is the point — it's slow and a little
+  annoying on purpose, so nobody deletes an employee's entire record by
+  clicking too fast.
 
 ---
 
@@ -347,20 +378,24 @@ section below, said out loud:
 
 ## Testing strategy
 
-- **Backend**: service-layer unit tests (JUnit 5 + Mockito) for business logic
-  (e.g. closing the previous salary record when a new one is added,
-  distinct-department/country delegation); repository tests
+- **Backend** (25 tests): service-layer unit tests (JUnit 5 + Mockito) for
+  business logic (e.g. closing the previous salary record when a new one is
+  added, distinct-department/country delegation, activate/deactivate flipping
+  status correctly, delete calling through to a real removal and refusing to
+  do anything if the employee doesn't exist); repository tests
   (`@DataJpaTest`) against a dedicated `test` Postgres profile — including a
   test asserting `findDistinctDepartments`/`findDistinctCountries` return
   sorted, de-duplicated values; controller-level coverage via the service
   layer's contract.
-- **Frontend**: specs run on Angular's default test runner (Vitest via
-  `@angular/build:unit-test` in Angular 21, not Karma/Jasmine) for the
-  employee API service (via `provideHttpClientTesting`) and the employee
-  list / employee form / analytics dashboard components — including a
-  regression test asserting the Save button's enabled state doesn't
-  regress when hidden create-only fields (hire date, starting salary) are
-  present in the form but not visible in edit mode.
+- **Frontend** (23 tests): specs run on Angular's default test runner (Vitest
+  via `@angular/build:unit-test` in Angular 21, not Karma/Jasmine) for the
+  employee API service (via `provideHttpClientTesting`, including that
+  activate/deactivate call the right endpoint and delete calls the real
+  `DELETE` endpoint) and the employee list / employee form / analytics
+  dashboard components — including a regression test asserting the Save
+  button's enabled state doesn't regress when hidden create-only fields
+  (hire date, starting salary) are present in the form but not visible in
+  edit mode.
 
 ## Performance considerations
 
@@ -401,6 +436,13 @@ connector everywhere.
 
 - No authentication — acceptable for a single-persona take-home; would be the
   first addition before any real deployment (see `docs/requirements.md`).
+- Permanent delete is a genuine hard delete — it removes the salary history
+  along with the employee, with no "recently deleted" recovery bin. That's a
+  deliberate simplification for this exercise's scope; a real HR system would
+  more likely soft-delete (keep the row, hide it everywhere) so a mistaken
+  delete is recoverable, and only hard-delete on a schedule or a separate
+  admin action. The typed "DELETE" confirmation is the safety net standing in
+  for that recovery path here.
 - No approval workflow on salary changes — the effective-dated model doesn't
   preclude adding a `PENDING`/`APPROVED` status to `SALARY_RECORD` later
   without a schema rewrite.
