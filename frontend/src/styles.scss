@@ -6,8 +6,8 @@ html {
   $theme: mat.define-theme((
     color: (
       theme-type: light,
-      primary: mat.$violet-palette,
-      tertiary: mat.$blue-palette,
+      primary: mat.$azure-palette,
+      tertiary: mat.$cyan-palette,
     ),
     typography: (
       brand-family: 'Roboto',

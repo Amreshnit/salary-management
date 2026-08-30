@@ -9,11 +9,11 @@
 
 .app-sidenav {
   width: 260px;
-  background: linear-gradient(180deg, #2e1065 0%, #4c1d95 100%);
-  color: rgba(255, 255, 255, 0.92);
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.87);
   display: flex;
   flex-direction: column;
-  border-right: none !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .app-brand {
@@ -22,12 +22,15 @@
   gap: 10px;
   padding: 24px 20px;
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.2px;
+  color: #005cbb;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 8px;
 }
 
 .app-brand-icon {
-  color: white;
+  color: #005cbb;
 }
 
 .app-nav-list {
@@ -37,30 +40,34 @@
   ::ng-deep .mdc-list-item {
     border-radius: 10px;
     margin-bottom: 4px;
-    color: rgba(255, 255, 255, 0.78) !important;
+    color: rgba(0, 0, 0, 0.72) !important;
 
     .mdc-list-item__start {
-      color: rgba(255, 255, 255, 0.78) !important;
+      color: rgba(0, 0, 0, 0.55) !important;
     }
   }
 
   ::ng-deep .mdc-list-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(0, 92, 187, 0.06);
   }
 }
 
 ::ng-deep .app-nav-item-active {
-  background: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(0, 92, 187, 0.1) !important;
 
-  .mdc-list-item__primary-text,
-  .mdc-list-item__start {
-    color: white !important;
+  .mdc-list-item__primary-text {
+    color: #005cbb !important;
     font-weight: 600;
+  }
+
+  .mdc-list-item__start {
+    color: #005cbb !important;
   }
 }
 
 .app-sidenav-footer {
   padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .app-cta {
@@ -94,7 +101,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4c1d95, #7c46f1);
+  background: linear-gradient(135deg, #005cbb, #0074e9);
   color: white;
   display: flex;
   align-items: center;
