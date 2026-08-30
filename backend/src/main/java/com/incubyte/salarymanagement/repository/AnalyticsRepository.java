@@ -1,6 +1,6 @@
 package com.incubyte.salarymanagement.repository;
 
-import com.incubyte.salarymanagement.domain.Employee;
+import com.incubyte.salarymanagement.model.Employee;
 import com.incubyte.salarymanagement.repository.projection.CountrySalaryProjection;
 import com.incubyte.salarymanagement.repository.projection.DepartmentSalaryProjection;
 import com.incubyte.salarymanagement.repository.projection.HeadcountSummaryProjection;

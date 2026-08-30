@@ -1,6 +1,6 @@
 package com.incubyte.salarymanagement.seed;
 
-import com.incubyte.salarymanagement.domain.SalaryChangeReason;
+import com.incubyte.salarymanagement.enums.SalaryChangeReason;
 import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

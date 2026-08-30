@@ -1,10 +1,10 @@
 package com.incubyte.salarymanagement.service;
 
-import com.incubyte.salarymanagement.domain.Employee;
-import com.incubyte.salarymanagement.domain.SalaryChangeReason;
-import com.incubyte.salarymanagement.domain.SalaryRecord;
-import com.incubyte.salarymanagement.dto.SalaryRecordRequest;
-import com.incubyte.salarymanagement.dto.SalaryRecordResponse;
+import com.incubyte.salarymanagement.model.Employee;
+import com.incubyte.salarymanagement.enums.SalaryChangeReason;
+import com.incubyte.salarymanagement.model.SalaryRecord;
+import com.incubyte.salarymanagement.dto.request.SalaryRecordRequest;
+import com.incubyte.salarymanagement.dto.response.SalaryRecordResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

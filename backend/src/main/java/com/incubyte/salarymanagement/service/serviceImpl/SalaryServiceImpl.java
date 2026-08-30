@@ -1,13 +1,15 @@
 package com.incubyte.salarymanagement.service.serviceImpl;
 
-import com.incubyte.salarymanagement.domain.Employee;
-import com.incubyte.salarymanagement.domain.SalaryChangeReason;
-import com.incubyte.salarymanagement.domain.SalaryRecord;
-import com.incubyte.salarymanagement.dto.SalaryRecordRequest;
-import com.incubyte.salarymanagement.dto.SalaryRecordResponse;
+import com.incubyte.salarymanagement.model.Employee;
+import com.incubyte.salarymanagement.enums.SalaryChangeReason;
+import com.incubyte.salarymanagement.model.SalaryRecord;
+import com.incubyte.salarymanagement.dto.request.SalaryRecordRequest;
+import com.incubyte.salarymanagement.dto.response.SalaryRecordResponse;
 import com.incubyte.salarymanagement.repository.SalaryRecordRepository;
 import com.incubyte.salarymanagement.service.SalaryService;
-import com.incubyte.salarymanagement.web.exception.EmployeeNotFoundException;
+import com.incubyte.salarymanagement.exception.EmployeeNotFoundException;
+import com.incubyte.salarymanagement.util.EmployeeLookup;
+import com.incubyte.salarymanagement.util.EmployeeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

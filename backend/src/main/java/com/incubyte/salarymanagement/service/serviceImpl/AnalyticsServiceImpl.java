@@ -1,10 +1,10 @@
 package com.incubyte.salarymanagement.service.serviceImpl;
 
-import com.incubyte.salarymanagement.dto.CountrySalaryStat;
-import com.incubyte.salarymanagement.dto.DepartmentSalaryStat;
-import com.incubyte.salarymanagement.dto.HeadcountSummary;
-import com.incubyte.salarymanagement.dto.PayrollByCurrency;
-import com.incubyte.salarymanagement.dto.SalaryBandStat;
+import com.incubyte.salarymanagement.dto.response.CountrySalaryStat;
+import com.incubyte.salarymanagement.dto.response.DepartmentSalaryStat;
+import com.incubyte.salarymanagement.dto.response.HeadcountSummary;
+import com.incubyte.salarymanagement.dto.response.PayrollByCurrency;
+import com.incubyte.salarymanagement.dto.response.SalaryBandStat;
 import com.incubyte.salarymanagement.repository.AnalyticsRepository;
 import com.incubyte.salarymanagement.repository.projection.HeadcountSummaryProjection;
 import com.incubyte.salarymanagement.service.AnalyticsService;

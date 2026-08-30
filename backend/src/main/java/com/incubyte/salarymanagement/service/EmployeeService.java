@@ -1,9 +1,9 @@
 package com.incubyte.salarymanagement.service;
 
-import com.incubyte.salarymanagement.domain.EmployeeStatus;
-import com.incubyte.salarymanagement.dto.EmployeeCreateRequest;
-import com.incubyte.salarymanagement.dto.EmployeeResponse;
-import com.incubyte.salarymanagement.dto.EmployeeUpdateRequest;
+import com.incubyte.salarymanagement.enums.EmployeeStatus;
+import com.incubyte.salarymanagement.dto.request.EmployeeCreateRequest;
+import com.incubyte.salarymanagement.dto.response.EmployeeResponse;
+import com.incubyte.salarymanagement.dto.request.EmployeeUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

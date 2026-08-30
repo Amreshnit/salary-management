@@ -1,7 +1,7 @@
 package com.incubyte.salarymanagement.repository;
 
-import com.incubyte.salarymanagement.domain.Employee;
-import com.incubyte.salarymanagement.domain.EmployeeStatus;
+import com.incubyte.salarymanagement.model.Employee;
+import com.incubyte.salarymanagement.enums.EmployeeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,6 @@
 package com.incubyte.salarymanagement.repository;
 
-import com.incubyte.salarymanagement.domain.SalaryRecord;
+import com.incubyte.salarymanagement.model.SalaryRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
