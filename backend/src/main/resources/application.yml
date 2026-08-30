@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: salary-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/salary_management
+    username: postgres
+    password: 1795
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.incubyte.salarymanagement: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: seed
+app:
+  seed:
+    employee-count: 10000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:postgresql://localhost:5432/salary_management_test
